@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+
+/* Make sure the page background follows dark mode - prevents white gutters */
+html, body, #root {
+  @apply bg-white text-gray-900;
+  height: 100%;
+  width: 100%;
+}
+
+/* When you add the `dark` class to <html>, apply dark background everywhere */
+html.dark, html.dark body, html.dark #root {
+  @apply bg-gray-800 text-gray-100;
+}
+
+/* Optional: ensure body margin is zero */
+body {
+  margin: 0;
+}
+
+/* Scrollbar styles (WebKit and Firefox)
+   Use the .scrollbar-thin utility class on scrollable containers */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent; /* transparent track by default */
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(148,163,184,0.6); /* gray thumb for light mode */
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* dark mode overrides for scrollbars */
+html.dark .scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+html.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(71,85,105,0.9); /* slate-600-ish, darker in dark mode */
+}
+
+/* Firefox */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148,163,184,0.6) transparent;
+}
+html.dark .scrollbar-thin {
+  scrollbar-color: rgba(71,85,105,0.9) transparent;
+}
+
+/* FIX: Override legacy page margins because Layout.jsx now handles the offset */
+main > div[class*="ml-"] {
+  margin-left: 0 !important;
+  width: 100%;
+}

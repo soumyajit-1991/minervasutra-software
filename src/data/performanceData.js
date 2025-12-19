@@ -1,0 +1,73 @@
+export const performanceData = {
+      // Key Metrics
+      metrics: {
+            avgScore: 4.2,
+            reviewsCompleted: 45,
+            pendingReviews: 12,
+            topPerformers: 8,
+      },
+
+      // Performance Reviews List
+      reviews: [
+            {
+                  id: "REV-101",
+                  employee: "Alice Johnson",
+                  department: "Engineering",
+                  role: "Senior Dev",
+                  rating: 4.8,
+                  reviewer: "John Doe",
+                  status: "Completed",
+                  date: "2024-11-15",
+            },
+            {
+                  id: "REV-102",
+                  employee: "Bob Smith",
+                  department: "Sales",
+                  role: "Sales Executive",
+                  rating: 3.5,
+                  reviewer: "Jane Smith",
+                  status: "Pending",
+                  date: "2024-12-01",
+            },
+            {
+                  id: "REV-103",
+                  employee: "Charlie Brown",
+                  department: "Product",
+                  role: "Product Manager",
+                  rating: 4.5,
+                  reviewer: "Sarah Connor",
+                  status: "Completed",
+                  date: "2024-11-20",
+            },
+            {
+                  id: "REV-104",
+                  employee: "Diana Prince",
+                  department: "HR",
+                  role: "HR Specialist",
+                  rating: 4.0,
+                  reviewer: "Clark Kent",
+                  status: "Completed",
+                  date: "2024-11-10",
+            },
+            {
+                  id: "REV-105",
+                  employee: "Ethan Hunt",
+                  department: "Engineering",
+                  role: "DevOps Engineer",
+                  rating: 4.9,
+                  reviewer: "Luther Stickell",
+                  status: "Completed",
+                  date: "2024-11-25",
+            },
+            {
+                  id: "REV-106",
+                  employee: "Fiona Gallagher",
+                  department: "Support",
+                  role: "Customer Support",
+                  rating: 0,
+                  reviewer: "Frank Gallagher",
+                  status: "Pending",
+                  date: "2024-12-05",
+            },
+      ],
+};
