@@ -72,5 +72,6 @@ export async function deleteOffer(id) {
 // Mapper helper
 const mapOfferFromApi = (o) => ({
       id: o.offerId || o._id,
+      _id: o._id, // Preserve MongoDB ObjectId for backend operations
       ...o
 });

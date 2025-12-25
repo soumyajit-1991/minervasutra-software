@@ -21,13 +21,17 @@ export default function InterviewScheduling() {
             return interview.status === filterStatus;
       });
 
-      const handleDelete = async (id) => {
+      const handleDelete = async (interviewId, mongoId) => {
             if (window.confirm("Are you sure you want to delete this interview?")) {
                   try {
-                        await deleteInterview(id);
-                        setInterviews(interviews.filter(i => i.id !== id));
+                        // Use MongoDB _id for API call
+                        await deleteInterview(mongoId);
+                        // Filter by custom id for state update
+                        setInterviews(interviews.filter(i => i.id !== interviewId));
+                        alert("Interview deleted successfully!");
                   } catch (err) {
-                        alert("Failed to delete interview");
+                        console.error("Delete error:", err);
+                        alert(err.message || "Failed to delete interview");
                   }
             }
       };
@@ -190,12 +194,12 @@ export default function InterviewScheduling() {
                                                             </div>
 
                                                             <div className="flex gap-2 mt-2">
-                                                                  <Link to={`/edit-interview/${interview.id}`} className={`text-xs px-3 py-1 rounded ${darkMode ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-600 hover:bg-blue-700"
+                                                                  <Link to={`/edit-interview/${interview._id}`} className={`text-xs px-3 py-1 rounded ${darkMode ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-600 hover:bg-blue-700"
                                                                         } text-white transition-colors flex items-center gap-1`}>
                                                                         Edit
                                                                   </Link>
                                                                   <button
-                                                                        onClick={() => handleDelete(interview.id)}
+                                                                        onClick={() => handleDelete(interview.id, interview._id)}
                                                                         className={`text-xs px-3 py-1 rounded ${darkMode ? "bg-red-600 hover:bg-red-700" : "bg-red-100 hover:bg-red-200 text-red-600"
                                                                               } transition-colors flex items-center gap-1`}
                                                                   >

@@ -14,11 +14,46 @@ import {
       Line,
 } from "recharts";
 import { CheckCircle, XCircle, Clock, CalendarOff } from "lucide-react";
-import { attendanceData } from "../data/attendanceData";
+import { fetchAttendanceStats } from "../api/attendanceService";
+import { useState, useEffect } from "react";
 
 export default function Attendance() {
       const { darkMode } = useOutletContext();
-      const { metrics, attendanceTrend, leaveDistribution, logs } = attendanceData;
+      const [attendanceData, setAttendanceData] = useState({
+            totalEmployees: 0,
+            present: 0,
+            absent: 0,
+            late: 0,
+            onLeave: 0,
+            attendanceRate: 0,
+            weeklyTrend: [],
+            leaveDistribution: []
+      });
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+            const loadAttendanceData = async () => {
+                  try {
+                        const stats = await fetchAttendanceStats();
+                        setAttendanceData({
+                              totalEmployees: stats.totalEmployees || 0,
+                              present: stats.present || 0,
+                              absent: stats.absent || 0,
+                              late: stats.late || 0,
+                              onLeave: stats.onLeave || 0,
+                              attendanceRate: stats.attendanceRate || 0,
+                              weeklyTrend: stats.weeklyTrend || [],
+                              leaveDistribution: stats.leaveDistribution || []
+                        });
+                  } catch (error) {
+                        console.error('Failed to load attendance data:', error);
+                  } finally {
+                        setLoading(false);
+                  }
+            };
+
+            loadAttendanceData();
+      }, []);
 
       const cardClass = `p-6 rounded-xl shadow-md transition-colors duration-300 ${darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900"
             }`;
@@ -34,25 +69,25 @@ export default function Attendance() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                         <StatCard
                               title="On Time / Present"
-                              value={metrics.present}
+                              value={loading ? "..." : attendanceData.present}
                               icon={<CheckCircle size={24} className="text-green-500" />}
                               darkMode={darkMode}
                         />
                         <StatCard
                               title="Absent"
-                              value={metrics.absent}
+                              value={loading ? "..." : attendanceData.absent}
                               icon={<XCircle size={24} className="text-red-500" />}
                               darkMode={darkMode}
                         />
                         <StatCard
                               title="Late Arrival"
-                              value={metrics.late}
+                              value={loading ? "..." : attendanceData.late}
                               icon={<Clock size={24} className="text-yellow-500" />}
                               darkMode={darkMode}
                         />
                         <StatCard
                               title="On Leave"
-                              value={metrics.onLeave}
+                              value={loading ? "..." : attendanceData.onLeave}
                               icon={<CalendarOff size={24} className="text-purple-500" />}
                               darkMode={darkMode}
                         />
@@ -64,7 +99,7 @@ export default function Attendance() {
                         <div className={`col-span-1 lg:col-span-2 ${cardClass}`}>
                               <h2 className="text-lg font-semibold mb-4">Weekly Attendance Trend</h2>
                               <ResponsiveContainer width="100%" height={300}>
-                                    <BarChart data={attendanceTrend}>
+                                    <BarChart data={attendanceData.weeklyTrend}>
                                           <XAxis dataKey="day" stroke={darkMode ? "#9ca3af" : "#4b5563"} />
                                           <YAxis stroke={darkMode ? "#9ca3af" : "#4b5563"} />
                                           <Tooltip
@@ -88,7 +123,7 @@ export default function Attendance() {
                               <ResponsiveContainer width="100%" height={300}>
                                     <PieChart>
                                           <Pie
-                                                data={leaveDistribution}
+                                                data={attendanceData.leaveDistribution}
                                                 cx="50%"
                                                 cy="50%"
                                                 innerRadius={60}
@@ -96,7 +131,7 @@ export default function Attendance() {
                                                 paddingAngle={5}
                                                 dataKey="value"
                                           >
-                                                {leaveDistribution.map((entry, index) => (
+                                                {attendanceData.leaveDistribution.map((entry, index) => (
                                                       <Cell key={`cell-${index}`} fill={entry.color} />
                                                 ))}
                                           </Pie>
@@ -130,29 +165,12 @@ export default function Attendance() {
                                           </tr>
                                     </thead>
                                     <tbody>
-                                          {logs.map((log) => (
-                                                <tr
-                                                      key={log.id}
-                                                      className={`border-b last:border-0 ${darkMode ? "border-gray-700 hover:bg-gray-700" : "border-gray-100 hover:bg-gray-50"
-                                                            }`}
-                                                >
-                                                      <td className="py-3 font-medium">{log.name}</td>
-                                                      <td className="py-3">{log.department}</td>
-                                                      <td className="py-3">{log.time}</td>
-                                                      <td className="py-3">
-                                                            <span
-                                                                  className={`px-2 py-1 rounded-full text-xs font-medium ${log.status === "On Time"
-                                                                              ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                                                                              : log.status === "Late"
-                                                                                    ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                                                                                    : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                                                                        }`}
-                                                            >
-                                                                  {log.status}
-                                                            </span>
-                                                      </td>
-                                                </tr>
-                                          ))}
+                                          <tr>
+                                                <td colSpan="4" className="py-8 text-center">
+                                                      <p className="text-lg font-medium">No attendance logs available</p>
+                                                      <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>Today's attendance data will appear here</p>
+                                                </td>
+                                          </tr>
                                     </tbody>
                               </table>
                         </div>

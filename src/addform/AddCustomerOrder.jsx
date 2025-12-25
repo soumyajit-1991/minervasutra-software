@@ -1,8 +1,9 @@
 //src/addform/AddCustomerOrder.jsx
 import { useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { Plus, X } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
+import axios from "axios";
 
 export default function AddNewCustomer() {
   const { darkMode } = useOutletContext();
@@ -12,6 +13,7 @@ export default function AddNewCustomer() {
     { name: "Product B", price: 15.99 },
     { name: "Product C", price: 20.99 },
   ];
+  const navigate=useNavigate();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -111,22 +113,119 @@ export default function AddNewCustomer() {
     return bill;
   };
 
-  const handleSave = (e) => {
-    e.preventDefault();
-    console.log("Customer Data Saved:", {
-      ...formData,
-      totalPrice: calculateTotalPrice(),
-    });
+  // const handleSave = (e) => {
+  //   e.preventDefault();
+  //   console.log("Customer Data Saved:", {
+  //     ...formData,
+  //     totalPrice: calculateTotalPrice(),
+  //   });
+  //   setFormData({
+  //     name: "",
+  //     phone: "",
+  //     address: "",
+  //     doctor: "",
+  //     products: [{ name: "", quantity: 1, isSingle: false, isFull: false, singleQuantity: 1, fullMultiplier: 1 }],
+  //     deliveryMethod: "",
+  //     notes: "",
+  //   });
+  // };
+
+
+  const handleSave = async (e) => {
+  e.preventDefault();
+
+  // const payload = {
+  //   customer: formData.name,
+  //   phone: formData.phone,
+  //   address: formData.address,
+  //   doctor: formData.doctor,
+  //   deliveryMethod: formData.deliveryMethod,
+  //   notes: formData.notes,
+  //   deliveryDate: new Date().toISOString().split("T")[0],
+  //   amount: Number(calculateTotalPrice()),
+  //   products: formData.products.map((p) => ({
+  //     name: p.name,
+  //     quantity: p.isFull
+  //       ? p.quantity * p.fullMultiplier
+  //       : p.isSingle
+  //       ? p.singleQuantity
+  //       : p.quantity,
+  //     price:
+  //       availableProducts.find((ap) => ap.name === p.name)?.price || 0,
+  //   })),
+  // };
+
+  const payload = {
+  customer: formData.name.trim(),
+  phone: formData.phone.trim(),
+  address: formData.address,
+  doctor: formData.doctor,
+  deliveryMethod: formData.deliveryMethod,
+  notes: formData.notes,
+  date: new Date().toISOString().split("T")[0],
+  deliveryDate: new Date().toISOString().split("T")[0],
+
+  amount: parseFloat(calculateTotalPrice()),
+
+  products: formData.products
+    .filter((p) => p.name.trim() !== "")
+    .map((p) => {
+      const basePrice =
+        availableProducts.find((ap) => ap.name === p.name)?.price || 0;
+
+      const qty = p.isFull
+        ? p.quantity * p.fullMultiplier
+        : p.isSingle
+        ? p.singleQuantity
+        : p.quantity;
+
+      return {
+        name: p.name,
+        quantity: Number(qty),
+        price: Number(basePrice),
+      };
+    }),
+};
+
+  console.log("Payload being sent:", payload);
+
+  try {
+    const res = await axios.post(
+      "http://localhost:5000/api/customer-orders",
+      payload
+    );
+    
+
+
+    alert("Order saved successfully");
+    console.log("Saved Order:", res.data);
+
     setFormData({
       name: "",
       phone: "",
       address: "",
       doctor: "",
-      products: [{ name: "", quantity: 1, isSingle: false, isFull: false, singleQuantity: 1, fullMultiplier: 1 }],
+      products: [
+        {
+          name: "",
+          quantity: 1,
+          isSingle: false,
+          isFull: false,
+          singleQuantity: 1,
+          fullMultiplier: 1,
+        },
+      ],
       deliveryMethod: "",
       notes: "",
     });
-  };
+  } catch (err) {
+    alert("Save failed");
+    console.error(err.response?.data || err.message);
+  }
+};
+
+
+
 
   const handlePrintBill = () => {
     const billContent = generateBillContent();
@@ -410,6 +509,7 @@ export default function AddNewCustomer() {
                   ? "bg-gray-600 text-white hover:bg-gray-500"
                   : "bg-gray-200 text-gray-900 hover:bg-gray-300"
               }`}
+              onClick={()=>{navigate("/customer-orders")}}
             >
               Cancel
             </button>

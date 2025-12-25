@@ -1,45 +1,50 @@
 import { useOutletContext } from "react-router-dom";
-import { Package, Users, DollarSign } from "lucide-react";
+import { Package, Users, DollarSign, TrendingUp } from "lucide-react";
 import StatCard from "../components/dashboard/StatCard";
 import RevenueExpense from "../components/dashboard/RevenueExpense";
 import AddNew from "../components/dashboard/AddNew";
 import PurchaseTable from "../components/dashboard/PurchaseTable";
 import ClipboardList from "../components/dashboard/CustomerList";
 import EventPieChart from "../components/dashboard/EventPieChart";
+import { fetchDashboardStats } from "../api/dashboardService";
+import { useState, useEffect } from "react";
 
-const revenueData = [
-  { month: "Jan", revenue: 12000, expense: 9000 },
-  { month: "Feb", revenue: 8000, expense: 6000 },
-  { month: "Mar", revenue: 14000, expense: 12000 },
-  { month: "Apr", revenue: 10000, expense: 9000 },
-  { month: "May", revenue: 16000, expense: 14000 },
-  { month: "Jun", revenue: 17000, expense: 15000 },
-  { month: "Jul", revenue: 18000, expense: 12000 },
-  { month: "Aug", revenue: 19000, expense: 11000 },
-  { month: "Sep", revenue: 16000, expense: 14000 },
-  { month: "Oct", revenue: 15000, expense: 14000 },
-  { month: "Nov", revenue: 10000, expense: 14000 },
-  { month: "Dec", revenue: 19000, expense: 14000 },
-];
+// Revenue data will be fetched from backend in future
+const revenueData = [];
 
 import { useMemo } from "react";
-import { EmployeeProvider, useEmployees } from "../context/EmployeeContext";
+import { useEmployees } from "../context/EmployeeContext";
 
 export default function Dashboard() {
-  return (
-    <EmployeeProvider>
-      <DashboardContent />
-    </EmployeeProvider>
-  );
-}
-
-function DashboardContent() {
   const { darkMode } = useOutletContext();
-  const { employees, loading } = useEmployees();
+  const { employees, loading, totalEmployees } = useEmployees();
+  const [dashboardStats, setDashboardStats] = useState({
+    activeJobPostings: 0,
+    totalCandidates: 0,
+    todayAttendance: 0,
+    monthlyExpenses: 0,
+    attendanceRate: 0
+  });
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadDashboardStats = async () => {
+      try {
+        const stats = await fetchDashboardStats();
+        setDashboardStats(stats);
+      } catch (error) {
+        console.error('Failed to load dashboard stats:', error);
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+
+    loadDashboardStats();
+  }, []);
 
   const genderData = useMemo(() => {
     const stats = employees.reduce((acc, curr) => {
-      const gender = curr.gender || "Unknown";
+      const gender = curr.personalInfo?.gender || "Unknown";
       acc[gender] = (acc[gender] || 0) + 1;
       return acc;
     }, {});
@@ -70,27 +75,27 @@ function DashboardContent() {
           <StatCard
             icon={<Users className="text-cyan-400" />}
             title="Total Employees"
-            value={employees.length}
-            change={employees.length > 0 ? "+Updated" : "0"}
+            value={loading ? "..." : totalEmployees}
+            change={`${dashboardStats.attendanceRate}% Present`}
             darkMode={darkMode}
           />
 
-          {/* Total Asset */}
+          {/* Active Job Postings */}
           <StatCard
             icon={<Package className="text-cyan-400" />}
-            title="Total Asset"
-            value="324"
-            change="-12%"
+            title="Active Jobs"
+            value={statsLoading ? "..." : dashboardStats.activeJobPostings}
+            change="Open Positions"
             darkMode={darkMode}
           />
 
           <div className="col-span-2">
-            {/* Total Expenses */}
+            {/* Total Candidates */}
             <StatCard
-              icon={<DollarSign className="text-cyan-400" />}
-              title="Total Expenses"
-              value="$45,000"
-              change="-2.5%"
+              icon={<TrendingUp className="text-cyan-400" />}
+              title="Total Candidates"
+              value={statsLoading ? "..." : dashboardStats.totalCandidates}
+              change="In Pipeline"
               darkMode={darkMode}
             />
           </div>
@@ -110,12 +115,20 @@ function DashboardContent() {
       </div>
 
       {/* Revenue Graph */}
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-3">
-          <RevenueExpense data={revenueData} darkMode={darkMode} />
+      {revenueData.length > 0 ? (
+        <div className="grid grid-cols-3 gap-6">
+          <div className="col-span-3">
+            <RevenueExpense data={revenueData} darkMode={darkMode} />
+          </div>
         </div>
+      ) : (
+        <div className={`p-8 rounded-xl text-center ${darkMode ? "bg-gray-800" : "bg-white"}`}>
+          <p className={`text-lg font-medium ${darkMode ? "text-gray-400" : "text-gray-600"}`}>No revenue data available</p>
+        </div>
+      )}
+      <div className="overflow-x-auto">
+        <EventPieChart darkMode={darkMode} />
       </div>
-
       {/* Table Sections */}
       <div className="overflow-x-auto">
         <PurchaseTable darkMode={darkMode} />

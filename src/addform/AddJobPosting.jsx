@@ -22,6 +22,7 @@ export default function AddJobPosting() {
             experience: "",
             description: "",
             priority: "Medium",
+            hiringManager: "",
       });
 
       const handleChange = (e) => {
@@ -207,14 +208,13 @@ export default function AddJobPosting() {
                                           />
                                     </div>
                                     <div>
-                                          <label className="block text-sm font-medium mb-1">Applicants</label>
+                                          <label className="block text-sm font-medium mb-1">Hiring Manager *</label>
                                           <input
-                                                type="number"
-                                                min="0"
-                                                name="applicants"
-                                                value={formData.applicants}
+                                                name="hiringManager"
+                                                value={formData.hiringManager}
                                                 onChange={handleChange}
-                                                placeholder="Applicants"
+                                                required
+                                                placeholder="Hiring Manager Name"
                                                 className={`w-full p-2 border rounded-md transition ${darkMode
                                                             ? "bg-gray-600 border-gray-500 text-gray-100"
                                                             : "bg-white border-gray-300 text-gray-900"

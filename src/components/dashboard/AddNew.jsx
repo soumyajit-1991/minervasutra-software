@@ -4,16 +4,20 @@ import { useNavigate } from "react-router-dom";
 export default function AddNew({ darkMode }) {
   const navigate = useNavigate();
 
-  const handleAddOrder = () => {
-    navigate("/add-interview-scheduling");
+  const handleAddInterview = () => {
+    navigate("/add-interview");
   };
 
-  const handleAddVacancy = () => {
-    navigate("/add-product");
+  const handleAddJobPosting = () => {
+    navigate("/add-job-posting");
   };
 
   const handleAddEmployee = () => {
     navigate("/add-new-employee");
+  };
+
+  const handleAddWorkflow = () => {
+    navigate("/workflow");
   };
 
   // Define the new button classes
@@ -27,19 +31,19 @@ export default function AddNew({ darkMode }) {
       style={{ height: "100%" }}
     >
       <button
-        onClick={handleAddOrder}
+        onClick={handleAddInterview}
         className={`mt-5 flex items-center gap-2 px-4 py-4 rounded-lg transition ${buttonClass}`}
       >
         <Plus size={18} />
-        Add Interview Scheduling
+        Add Interview
       </button>
 
       <button
-        onClick={handleAddVacancy}
+        onClick={handleAddJobPosting}
         className={`flex items-center gap-2 px-4 py-4 rounded-lg transition ${buttonClass}`}
       >
         <Plus size={18} />
-        Add New Vacancy
+        Add Job Posting
       </button>
 
       <button
@@ -51,11 +55,11 @@ export default function AddNew({ darkMode }) {
       </button>
 
       <button
-        onClick={handleAddEmployee}
+        onClick={handleAddWorkflow}
         className={`flex items-center gap-2 px-4 py-4 rounded-lg transition ${buttonClass}`}
       >
         <Plus size={18} />
-        Add New Workflow
+        View Workflow
       </button>
     </div>
   );

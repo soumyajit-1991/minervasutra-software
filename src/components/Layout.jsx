@@ -1,7 +1,9 @@
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
+import ConnectionStatus from "./common/ConnectionStatus";
 import { Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { startAutoRefresh, stopAutoRefresh } from "../utils/dataRefresh";
 
 export default function Layout() {
   const [darkMode, setDarkMode] = useState(false);
@@ -27,6 +29,15 @@ export default function Layout() {
     }
   }, [darkMode]);
 
+  useEffect(() => {
+    // Start auto-refresh for cached data
+    startAutoRefresh();
+    
+    return () => {
+      stopAutoRefresh();
+    };
+  }, []);
+
   return (
     <div
       className={`flex h-screen transition-colors duration-300 ${darkMode ? "bg-gray-800 text-gray-100" : "bg-gray-50 text-gray-900"
@@ -40,6 +51,7 @@ export default function Layout() {
           <Outlet context={{ darkMode }} />
         </main>
       </div>
+      <ConnectionStatus darkMode={darkMode} />
     </div>
   );
 }

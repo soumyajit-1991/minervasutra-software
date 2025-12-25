@@ -1,14 +1,31 @@
 import { useOutletContext } from "react-router-dom";
 import { Users, ZoomIn, ZoomOut, Maximize } from "lucide-react";
-import { teamHierarchyData } from "../data/teamHierarchyData";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function TeamHierarchy() {
       const { darkMode } = useOutletContext();
       const [zoom, setZoom] = useState(1);
+      const [hierarchyData, setHierarchyData] = useState(null);
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+            // TODO: Replace with actual API call to fetch team hierarchy data
+            setLoading(false);
+      }, []);
 
       const handleZoomIn = () => setZoom((prev) => Math.min(prev + 0.1, 1.5));
       const handleZoomOut = () => setZoom((prev) => Math.max(prev - 0.1, 0.5));
+
+      if (loading) {
+            return (
+                  <div className={`p-6 ml-64 mt-16 min-h-screen transition-colors duration-300 ${darkMode ? "bg-gray-900 text-gray-100" : "bg-gray-50 text-gray-900"}`}>
+                        <div className="text-center py-12">
+                              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                              <p className="mt-4">Loading team hierarchy...</p>
+                        </div>
+                  </div>
+            );
+      }
 
       return (
             <div
@@ -38,7 +55,15 @@ export default function TeamHierarchy() {
                         <div
                               style={{ transform: `scale(${zoom})`, transformOrigin: 'top center', transition: 'transform 0.2s ease-out' }}
                         >
-                              <OrgNode node={teamHierarchyData} darkMode={darkMode} />
+                              {hierarchyData ? (
+                                    <OrgNode node={hierarchyData} darkMode={darkMode} />
+                              ) : (
+                                    <div className="text-center py-12">
+                                          <Users size={48} className={`mx-auto mb-4 ${darkMode ? "text-gray-700" : "text-gray-300"}`} />
+                                          <p className="text-lg font-medium">No team hierarchy data available</p>
+                                          <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>Team structure will appear here when data is loaded</p>
+                                    </div>
+                              )}
                         </div>
                   </div>
             </div>

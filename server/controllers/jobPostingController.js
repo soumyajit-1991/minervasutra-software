@@ -1,20 +1,148 @@
-const JobPosting = require("../models/JobPosting");
+// const JobPosting = require('../models/JobPosting');
 
-const generateJobId = async () => {
-  const count = await JobPosting.countDocuments();
-  return `JP-${new Date().getFullYear()}-${String(count + 1).padStart(3, "0")}`;
-};
+// // Get all job postings
+// const getJobPostings = async (req, res) => {
+//   try {
+//     const jobPostings = await JobPosting.find().sort({ createdAt: -1 });
+//     res.json(jobPostings);
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
 
-exports.getAll = async (_req, res) => {
+// // Get job posting by ID
+// const getJobPostingById = async (req, res) => {
+//   try {
+//     const jobPosting = await JobPosting.findById(req.params.id);
+//     if (!jobPosting) {
+//       return res.status(404).json({ error: 'Job posting not found' });
+//     }
+//     res.json(jobPosting);
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
+// // Create new job posting
+// const createJobPosting = async (req, res) => {
+//   try {
+//     // Generate job ID
+//     const count = await JobPosting.countDocuments();
+//     const jobId = `JP-${new Date().getFullYear()}-${String(count + 1).padStart(3, '0')}`;
+    
+//     const jobPosting = new JobPosting({
+//       ...req.body,
+//       jobId
+//     });
+    
+//     const savedJobPosting = await jobPosting.save();
+//     res.status(201).json(savedJobPosting);
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// };
+
+// // Update job posting
+// const updateJobPosting = async (req, res) => {
+//   try {
+//     const jobPosting = await JobPosting.findByIdAndUpdate(
+//       req.params.id,
+//       req.body,
+//       { new: true, runValidators: true }
+//     );
+    
+//     if (!jobPosting) {
+//       return res.status(404).json({ error: 'Job posting not found' });
+//     }
+    
+//     res.json(jobPosting);
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// };
+
+// // Delete job posting
+// const deleteJobPosting = async (req, res) => {
+//   try {
+//     const jobPosting = await JobPosting.findByIdAndDelete(req.params.id);
+//     if (!jobPosting) {
+//       return res.status(404).json({ error: 'Job posting not found' });
+//     }
+//     res.json({ message: 'Job posting deleted successfully' });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
+// // Get job posting statistics
+// const getJobPostingStats = async (req, res) => {
+//   try {
+//     const active = await JobPosting.countDocuments({ status: 'Active' });
+//     const draft = await JobPosting.countDocuments({ status: 'Draft' });
+//     const closed = await JobPosting.countDocuments({ status: 'Closed' });
+//     const onHold = await JobPosting.countDocuments({ status: 'On Hold' });
+    
+//     // Total applicants across all job postings
+//     const totalApplicantsResult = await JobPosting.aggregate([
+//       { $group: { _id: null, totalApplicants: { $sum: '$applicants' } } }
+//     ]);
+//     const totalApplicants = totalApplicantsResult[0]?.totalApplicants || 0;
+    
+//     res.json({
+//       active,
+//       draft,
+//       closed,
+//       onHold,
+//       totalApplicants
+//     });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
+// module.exports = {
+//   getJobPostings,
+//   getJobPostingById,
+//   createJobPosting,
+//   updateJobPosting,
+//   deleteJobPosting,
+//   getJobPostingStats
+// };
+
+
+const JobPosting = require('../models/JobPosting');
+
+// ===============================
+// GET ALL JOB POSTINGS
+// ===============================
+exports.getJobPostings = async (req, res) => {
   try {
     const jobs = await JobPosting.find().sort({ createdAt: -1 });
-    res.status(200).json(jobs);
+    res.json(jobs);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching job postings", error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
-exports.create = async (req, res) => {
+// ===============================
+// GET JOB POSTING BY ID
+// ===============================
+exports.getJobPostingById = async (req, res) => {
+  try {
+    const job = await JobPosting.findById(req.params.id);
+    if (!job) {
+      return res.status(404).json({ error: 'Job posting not found' });
+    }
+    res.json(job);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// ===============================
+// CREATE JOB POSTING ✅ FIXED
+// ===============================
+exports.createJobPosting = async (req, res) => {
   try {
     const {
       title,
@@ -29,60 +157,103 @@ exports.create = async (req, res) => {
       experience,
       description,
       priority,
+      hiringManager
     } = req.body;
 
-    if (!title) return res.status(400).json({ message: "Title is required" });
+    // 🔴 Validation
+    if (!title || !department || !location || !closingDate || !salary || !experience || !description || !hiringManager) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
 
-    const job = new JobPosting({
-      jobId: await generateJobId(),
+    // 🔹 Auto-generate Job ID
+    const jobId = `JOB-${Date.now()}`;
+
+    const newJob = new JobPosting({
+      jobId,
       title,
       department,
       location,
       type,
       postedDate: postedDate || Date.now(),
-      closingDate: closingDate || null,
-      status: status || "Draft",
-      applicants: applicants || 0,
-      salary: salary || "",
-      experience: experience || "",
-      description: description || "",
-      priority: priority || "Medium",
+      closingDate,
+      status,
+      applicants,
+      salary,
+      experience,
+      description,
+      priority,
+      hiringManager
     });
 
-    const saved = await job.save();
-    res.status(201).json(saved);
+    await newJob.save();
+
+    res.status(201).json({
+      message: 'Job posting created successfully',
+      job: newJob
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error creating job posting", error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
-exports.update = async (req, res) => {
+// ===============================
+// UPDATE JOB POSTING
+// ===============================
+exports.updateJobPosting = async (req, res) => {
   try {
-    const updates = { ...req.body };
-    const updated = await JobPosting.findOneAndUpdate(
-      { jobId: req.params.id },
-      { ...updates, updatedAt: Date.now() },
-      { new: true }
+    const updatedJob = await JobPosting.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
     );
-    if (!updated) return res.status(404).json({ message: "Job posting not found" });
-    res.status(200).json(updated);
+
+    if (!updatedJob) {
+      return res.status(404).json({ error: 'Job posting not found' });
+    }
+
+    res.json({
+      message: 'Job posting updated successfully',
+      job: updatedJob
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error updating job posting", error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
-exports.remove = async (req, res) => {
+// ===============================
+// DELETE JOB POSTING
+// ===============================
+exports.deleteJobPosting = async (req, res) => {
   try {
-    const deleted = await JobPosting.findOneAndDelete({ jobId: req.params.id });
-    if (!deleted) return res.status(404).json({ message: "Job posting not found" });
-    res.status(200).json({ message: "Job posting deleted successfully" });
+    const deletedJob = await JobPosting.findByIdAndDelete(req.params.id);
+
+    if (!deletedJob) {
+      return res.status(404).json({ error: 'Job posting not found' });
+    }
+
+    res.json({ message: 'Job posting deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: "Error deleting job posting", error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
+// ===============================
+// JOB POSTING STATS
+// ===============================
+exports.getJobPostingStats = async (req, res) => {
+  try {
+    const total = await JobPosting.countDocuments();
+    const active = await JobPosting.countDocuments({ status: 'Active' });
+    const closed = await JobPosting.countDocuments({ status: 'Closed' });
+    const draft = await JobPosting.countDocuments({ status: 'Draft' });
 
-
-
-
-
+    res.json({
+      total,
+      active,
+      closed,
+      draft
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

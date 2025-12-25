@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, Bell, Sun, Moon, ScrollText } from "lucide-react";
 import { IoChatboxEllipsesOutline, IoSparklesOutline } from "react-icons/io5";
 import navbar from "../assets/navbar.jpg";
+import { useEmployees } from "../context/EmployeeContext";
 
 // Define a common class string for the icon buttons
 // It sets a fixed size (w-8 h-8), ensures the content is centered (flex items-center justify-center),
@@ -15,15 +16,27 @@ const Navbar = ({ darkMode, setDarkMode }) => {
   const [showNotificationsPopup, setShowNotificationsPopup] = useState(false);
   const [messageText, setMessageText] = useState("");
   const navigate = useNavigate();
+  const { currentEmployee, loading } = useEmployees();
 
-  const profileData = {
+  // Use employee data from context or fallback to default
+  const profileData = currentEmployee ? {
+    imageUrl: currentEmployee.avatarUrl || navbar,
+    name: currentEmployee.name,
+    mobile: currentEmployee.phone,
+    email: currentEmployee.email,
+    employeeId: currentEmployee.employeeId || currentEmployee._id,
+    address: currentEmployee.personalInfo?.address || currentEmployee.location,
+    role: currentEmployee.role,
+    department: currentEmployee.department,
+  } : {
     imageUrl: navbar,
-    name: "Tahsan Khan",
-    mobile: "01893531209",
-    email: "tahsankhan@gmail.com",
-    aadhaar: "1234-5678-9012",
-    address: "Kolkata, 710000",
-    role: "Employee",
+    name: "Loading...",
+    mobile: "-",
+    email: "-",
+    employeeId: "-",
+    address: "-",
+    role: "-",
+    department: "-",
   };
 
   const handleSendMessage = () => {
@@ -53,7 +66,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
       >
         {/* Left Section: Hello & Dark Mode Toggle */}
         <div className="gap-4 flex mx-2 items-center">
-          <h2 className="text-lg font-semibold">👋 Hello, Tahsan Khan!</h2>
+          <h2 className="text-lg font-semibold">👋 Hello, {profileData.name}!</h2>
           <button
             onClick={() => setDarkMode(!darkMode)}
             // Applying the base class and consistent hover effect
@@ -134,9 +147,9 @@ const Navbar = ({ darkMode, setDarkMode }) => {
               className="w-8 h-8 rounded-full"
             />
             <div>
-              <p className="text-sm font-medium">Tahsan Khan</p>
+              <p className="text-sm font-medium">{profileData.name}</p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                tahsankhan@gmail.com
+                {profileData.email}
               </p>
             </div>
             <div>
@@ -173,12 +186,13 @@ const Navbar = ({ darkMode, setDarkMode }) => {
                         <p className="text-sm text-gray-400">{profileData.mobile}</p>
                         <p className="text-sm text-gray-400">{profileData.email}</p>
                         <p className="text-sm text-gray-400">
-                            Aadhaar No.: {profileData.aadhaar}
+                            Employee ID: {profileData.employeeId}
                         </p>
                         <p className="text-sm text-gray-400">
                             Address: {profileData.address}
                         </p>
                         <p className="text-sm text-gray-400">Role: {profileData.role}</p>
+                        <p className="text-sm text-gray-400">Department: {profileData.department}</p>
                     </div>
                     <button
                         className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"

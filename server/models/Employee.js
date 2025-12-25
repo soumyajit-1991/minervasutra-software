@@ -1,98 +1,96 @@
-//models/Employee.js
 const mongoose = require('mongoose');
 
-const EmployeeSchema = new mongoose.Schema({
+const employeeSchema = new mongoose.Schema({
   employeeId: {
     type: String,
     required: true,
-    unique: true,
-    trim: true
-  },
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    lowercase: true
-  },
-  password: {
-    type: String,
-    required: true,
-    trim: true
+    unique: true
   },
   name: {
     type: String,
-    required: true,
-    trim: true
-  },
-  mobile: {
-    type: String,
-    required: true,
-    trim: true
+    required: true
   },
   email: {
     type: String,
     required: true,
-    trim: true,
-    lowercase: true
+    unique: true
   },
-  aadhaar: {
+  phone: {
     type: String,
-    required: true,
-    trim: true,
-    match: [/^\d{12}$/, 'Aadhaar must be a 12-digit number']
-  },
-  address: {
-    type: String,
-    required: true,
-    trim: true
+    required: true
   },
   role: {
     type: String,
-    required: true,
-    trim: true
+    required: true
   },
-  gender: {
+  department: {
     type: String,
-    required: true,
-    enum: ["Male", "Female", "Other"],
-    trim: true
+    required: true
   },
-  branch: {
+  location: {
     type: String,
-    default: ""
+    required: true
+  },
+ status: {
+  type: String,
+  enum: ["Active", "Probation", "Notice Period"],
+  default: "Active",
+},
+
+  avatarUrl: {
+    type: String,
+    default: ''
+  },
+  joinedDate: {
+    type: Date,
+    default: Date.now
+  },
+  manager: {
+    type: String,
+    default: ''
   },
   salary: {
     type: Number,
-    required: true,
-    min: 0
+    required: true
   },
-  hoursWorked: [{
-    month: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    hours: {
-      type: Number,
-      required: true,
-      min: 0
-    }
+  about: {
+    type: String,
+    default: ''
+  },
+  personalInfo: {
+    dob: Date,
+    nationality: String,
+    maritalStatus: String,
+    gender: String,
+    address: String
+  },
+  skills: [{
+    type: String
   }],
-  createdAt: {
-    type: Date,
-    default: Date.now
+  experience: [{
+    role: String,
+    company: String,
+    duration: String,
+    description: String
+  }],
+  documents: [{
+    name: String,
+    size: String,
+    date: String
+  }],
+  attendance: {
+    totalDays: { type: Number, default: 0 },
+    presentDays: { type: Number, default: 0 },
+    absentDays: { type: Number, default: 0 },
+    lateDays: { type: Number, default: 0 }
   },
-  updatedAt: {
-    type: Date,
-    default: Date.now
+  performance: {
+    rating: { type: Number, default: 0 },
+    lastReviewDate: Date,
+    reviewer: String
   }
+}, {
+  timestamps: true
 });
 
-// Update timestamp on save
-EmployeeSchema.pre('save', function (next) {
-  this.updatedAt = Date.now();
-  next();
-});
-
-module.exports = mongoose.model('Employee', EmployeeSchema);
+module.exports = mongoose.model('Employee', employeeSchema);

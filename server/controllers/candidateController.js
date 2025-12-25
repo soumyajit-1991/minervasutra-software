@@ -1,105 +1,146 @@
 const Candidate = require('../models/Candidate');
 
-// Generate custom ID like CAN001
-const generateCandidateId = async () => {
-      const lastCandidate = await Candidate.findOne({}, { candidateId: 1 }).sort({ createdAt: -1 });
-      let nextId = 1;
-      if (lastCandidate && lastCandidate.candidateId) {
-            const lastIdNum = parseInt(lastCandidate.candidateId.replace('CAN', ''), 10);
-            if (!isNaN(lastIdNum)) {
-                  nextId = lastIdNum + 1;
-            }
-      }
-      return `CAN${String(nextId).padStart(3, '0')}`;
+// Get all candidates
+const getCandidates = async (req, res) => {
+  try {
+    const candidates = await Candidate.find()
+      .populate('jobPostingId', 'title department')
+      .sort({ createdAt: -1 });
+    res.json(candidates);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
-exports.getAllCandidates = async (req, res) => {
-      try {
-            const candidates = await Candidate.find().sort({ createdAt: -1 });
-            res.status(200).json(candidates);
-      } catch (error) {
-            res.status(500).json({ message: 'Error fetching candidates', error: error.message });
-      }
+// Get candidate by ID
+const getCandidateById = async (req, res) => {
+  try {
+    const candidate = await Candidate.findById(req.params.id)
+      .populate('jobPostingId', 'title department');
+    if (!candidate) {
+      return res.status(404).json({ error: 'Candidate not found' });
+    }
+    res.json(candidate);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
-exports.createCandidate = async (req, res) => {
-      try {
-            const { name, email, phone, position, experience, recruiter, stage, status, rating, nextStep } = req.body;
-
-            if (!name || !email || !phone || !position) {
-                  return res.status(400).json({ message: 'Missing required fields' });
-            }
-
-            const candidateId = await generateCandidateId();
-
-            const newCandidate = new Candidate({
-                  candidateId,
-                  name,
-                  email,
-                  phone,
-                  position,
-                  experience,
-                  recruiter,
-                  stage,
-                  status,
-                  rating,
-                  nextStep
-            });
-
-            const savedCandidate = await newCandidate.save();
-            res.status(201).json(savedCandidate);
-      } catch (error) {
-            res.status(500).json({ message: 'Error creating candidate', error: error.message });
-      }
+// Create new candidate
+const createCandidate = async (req, res) => {
+  try {
+    // Generate candidate ID
+    const count = await Candidate.countDocuments();
+    const candidateId = `CND-${new Date().getFullYear()}-${String(count + 1).padStart(3, '0')}`;
+    
+    const candidate = new Candidate({
+      ...req.body,
+      candidateId
+    });
+    
+    const savedCandidate = await candidate.save();
+    res.status(201).json(savedCandidate);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 
-exports.updateCandidate = async (req, res) => {
-      try {
-            const { id } = req.params;
-            const updates = req.body;
-
-            const candidate = await Candidate.findOneAndUpdate(
-                  { candidateId: id },
-                  { ...updates, updatedAt: Date.now() },
-                  { new: true }
-            );
-
-            if (!candidate) {
-                  return res.status(404).json({ message: 'Candidate not found' });
-            }
-
-            res.status(200).json(candidate);
-      } catch (error) {
-            res.status(500).json({ message: 'Error updating candidate', error: error.message });
-      }
+// Update candidate
+const updateCandidate = async (req, res) => {
+  try {
+    const candidate = await Candidate.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    ).populate('jobPostingId', 'title department');
+    
+    if (!candidate) {
+      return res.status(404).json({ error: 'Candidate not found' });
+    }
+    
+    res.json(candidate);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 
-exports.deleteCandidate = async (req, res) => {
-      try {
-            const { id } = req.params;
-            const candidate = await Candidate.findOneAndDelete({ candidateId: id });
-
-            if (!candidate) {
-                  return res.status(404).json({ message: 'Candidate not found' });
-            }
-
-            res.status(200).json({ message: 'Candidate deleted successfully' });
-      } catch (error) {
-            res.status(500).json({ message: 'Error deleting candidate', error: error.message });
-      }
+// Delete candidate
+const deleteCandidate = async (req, res) => {
+  try {
+    const candidate = await Candidate.findByIdAndDelete(req.params.id);
+    if (!candidate) {
+      return res.status(404).json({ error: 'Candidate not found' });
+    }
+    res.json({ message: 'Candidate deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
-exports.getCandidateById = async (req, res) => {
-      try {
-            const { id } = req.params;
-            const candidate = await Candidate.findOne({ candidateId: id });
+// Get candidate statistics
+const getCandidateStats = async (req, res) => {
+  try {
+    const totalCandidates = await Candidate.countDocuments();
+    const screening = await Candidate.countDocuments({ stage: 'Screening' });
+    const phoneInterview = await Candidate.countDocuments({ stage: 'Phone Interview' });
+    const technicalInterview = await Candidate.countDocuments({ stage: 'Technical Interview' });
+    const finalInterview = await Candidate.countDocuments({ stage: 'Final Interview' });
+    const offer = await Candidate.countDocuments({ stage: 'Offer' });
+    const rejected = await Candidate.countDocuments({ stage: 'Rejected' });
+    const hired = await Candidate.countDocuments({ stage: 'Hired' });
+    
+    // Stage breakdown
+    const stageStats = [
+      { id: 'screening', name: 'Screening', count: screening, color: 'blue' },
+      { id: 'phone-interview', name: 'Phone Interview', count: phoneInterview, color: 'purple' },
+      { id: 'technical-interview', name: 'Technical Interview', count: technicalInterview, color: 'indigo' },
+      { id: 'final-interview', name: 'Final Interview', count: finalInterview, color: 'orange' },
+      { id: 'offer', name: 'Offer', count: offer, color: 'green' },
+      { id: 'rejected', name: 'Rejected', count: rejected, color: 'red' },
+      { id: 'hired', name: 'Hired', count: hired, color: 'emerald' }
+    ];
+    
+    res.json({
+      totalCandidates,
+      screening,
+      interviewing: phoneInterview + technicalInterview + finalInterview,
+      offered: offer,
+      hired,
+      rejected,
+      stages: stageStats
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
-            if (!candidate) {
-                  return res.status(404).json({ message: 'Candidate not found' });
-            }
+// Update candidate stage
+const updateCandidateStage = async (req, res) => {
+  try {
+    const { stage, nextStep } = req.body;
+    
+    const candidate = await Candidate.findByIdAndUpdate(
+      req.params.id,
+      { stage, nextStep },
+      { new: true, runValidators: true }
+    );
+    
+    if (!candidate) {
+      return res.status(404).json({ error: 'Candidate not found' });
+    }
+    
+    res.json(candidate);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 
-            res.status(200).json(candidate);
-      } catch (error) {
-            res.status(500).json({ message: 'Error fetching candidate', error: error.message });
-      }
+module.exports = {
+  getCandidates,
+  getCandidateById,
+  createCandidate,
+  updateCandidate,
+  deleteCandidate,
+  getCandidateStats,
+  updateCandidateStage
 };

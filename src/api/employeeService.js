@@ -1,5 +1,6 @@
 import { API_BASE_URL } from "../config";
 import { safeJsonParse, safeFetch } from "../utils/apiHelpers";
+import { withCache, dataCache } from "../utils/dataCache";
 
 const API_BASE = API_BASE_URL;
 
@@ -32,20 +33,18 @@ const mapEmployeeFromApi = (emp) => ({
       ],
 });
 
-export async function fetchEmployees() {
-  const response = await safeFetch(`${API_BASE}/api/employees`, {
-    headers: {
-      "Cache-Control": "no-cache",
-      "Pragma": "no-cache"
-    }
-  });
+// Cached version of fetchEmployees
+const _fetchEmployees = async () => {
+  const response = await safeFetch(`${API_BASE}/api/employees`);
   if (!response.ok) {
     const message = await response.text();
     throw new Error(message || `HTTP error! status: ${response.status}`);
   }
   const data = await safeJsonParse(response);
   return data.map(mapEmployeeFromApi);
-}
+};
+
+export const fetchEmployees = withCache('employees', _fetchEmployees, 2 * 60 * 1000); // 2 min cache
 
 export async function createEmployee(employee) {
   const response = await safeFetch(`${API_BASE}/api/employees`, {
@@ -60,6 +59,10 @@ export async function createEmployee(employee) {
   }
 
   const data = await safeJsonParse(response);
+  
+  // Clear cache after creating new employee
+  dataCache.delete('employees_[]');
+  
   return mapEmployeeFromApi(data);
 }
 

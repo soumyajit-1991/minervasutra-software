@@ -1,162 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import { Search, Plus, Eye, Trash2, Users, Edit } from "lucide-react";
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { FiUserPlus } from "react-icons/fi";
 import { IoIosArrowDown } from "react-icons/io";
+import api from "../components/axios";
 
 export default function Customer() {
   const { darkMode } = useOutletContext();
   const navigate = useNavigate();
-  const [customers, setCustomers] = useState([
-    {
-      id: "#CUS001",
-      name: "A Khan",
-      phone: "01893531209",
-      balance: "$53,546.00",
-      address: "Kolkata,710000",
-      doctors: [
-        { name: "Dr. Smith", inClinic: true },
-        { name: "Dr. Lee", inClinic: false }
-      ],
-      orderFrequency: [
-        { month: "Jan", orders: 5 },
-        { month: "Feb", orders: 8 },
-        { month: "Mar", orders: 3 },
-        { month: "Apr", orders: 7 },
-        { month: "May", orders: 6 },
-        { month: "Jun", orders: 9 },
-        { month: "Jul", orders: 4 },
-        { month: "Aug", orders: 2 }
-      ]
-    },
-    {
-      id: "#CUS002",
-      name: "A Ghogh",
-      phone: "01893531209",
-      balance: "$23,732.00",
-      address: "Kolkata,710000",
-      doctors: [
-        { name: "Dr. Johnson", inClinic: false },
-        { name: "Dr. Patel", inClinic: true }
-      ],
-      orderFrequency: [
-        { month: "Jan", orders: 3 },
-        { month: "Feb", orders: 6 },
-        { month: "Mar", orders: 2 },
-        { month: "Apr", orders: 4 },
-        { month: "May", orders: 5 },
-        { month: "Jun", orders: 1 },
-        { month: "Jul", orders: 7 },
-        { month: "Aug", orders: 3 }
-      ]
-    },
-    {
-      id: "#CUS003",
-      name: "J Khan",
-      phone: "01893531209",
-      balance: "$15,324.00",
-      address: "Kolkata,710000",
-      doctors: [
-        { name: "Dr. Brown", inClinic: true },
-        { name: "Dr. Garcia", inClinic: false }
-      ],
-      orderFrequency: [
-        { month: "Jan", orders: 7 },
-        { month: "Feb", orders: 4 },
-        { month: "Mar", orders: 9 },
-        { month: "Apr", orders: 2 },
-        { month: "May", orders: 8 },
-        { month: "Jun", orders: 5 },
-        { month: "Jul", orders: 6 },
-        { month: "Aug", orders: 1 }
-      ]
-    },
-    {
-      id: "#CUS004",
-      name: "Hasan Khan",
-      phone: "01893531209",
-      balance: "$18,435.00",
-      address: "Kolkata,710000",
-      doctors: [
-        { name: "Dr. Wilson", inClinic: false },
-        { name: "Dr. Clark", inClinic: true }
-      ],
-      orderFrequency: [
-        { month: "Jan", orders: 2 },
-        { month: "Feb", orders: 5 },
-        { month: "Mar", orders: 8 },
-        { month: "Apr", orders: 3 },
-        { month: "May", orders: 6 },
-        { month: "Jun", orders: 9 },
-        { month: "Jul", orders: 4 },
-        { month: "Aug", orders: 7 }
-      ]
-    },
-    {
-      id: "#CUS005",
-      name: "Ali Khan",
-      phone: "01893531209",
-      balance: "$19,324.00",
-      address: "Kolkata,710000",
-      doctors: [
-        { name: "Dr. Taylor", inClinic: true },
-        { name: "Dr. Adams", inClinic: false }
-      ],
-      orderFrequency: [
-        { month: "Jan", orders: 6 },
-        { month: "Feb", orders: 9 },
-        { month: "Mar", orders: 1 },
-        { month: "Apr", orders: 5 },
-        { month: "May", orders: 8 },
-        { month: "Jun", orders: 3 },
-        { month: "Jul", orders: 7 },
-        { month: "Aug", orders: 4 }
-      ]
-    },
-    {
-      id: "#CUS006",
-      name: "A S",
-      phone: "01893531209",
-      balance: "$34,768.00",
-      address: "Kolkata,710000",
-      doctors: [
-        { name: "Dr. Anderson", inClinic: false },
-        { name: "Dr. Walker", inClinic: true }
-      ],
-      orderFrequency: [
-        { month: "Jan", orders: 4 },
-        { month: "Feb", orders: 2 },
-        { month: "Mar", orders: 6 },
-        { month: "Apr", orders: 9 },
-        { month: "May", orders: 3 },
-        { month: "Jun", orders: 7 },
-        { month: "Jul", orders: 5 },
-        { month: "Aug", orders: 8 }
-      ]
-    },
-    {
-      id: "#CUS007",
-      name: "J Khan",
-      phone: "01893531209",
-      balance: "$52,324.00",
-      address: "Kolkata,710000",
-      doctors: [
-        { name: "Dr. Davis", inClinic: true },
-        { name: "Dr. Harris", inClinic: false }
-      ],
-      orderFrequency: [
-        { month: "Jan", orders: 8 },
-        { month: "Feb", orders: 3 },
-        { month: "Mar", orders: 7 },
-        { month: "Apr", orders: 5 },
-        { month: "May", orders: 2 },
-        { month: "Jun", orders: 6 },
-        { month: "Jul", orders: 9 },
-        { month: "Aug", orders: 1 }
-      ]
-    },
-  ]);
+  const [customers, setCustomers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // Fetch customers from backend
+  const fetchCustomers = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get("/customers");
+      setCustomers(response.data);
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to fetch customers.");
+      setLoading(false);
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
 
   // State for order frequency modal
   const [showModal, setShowModal] = useState(false);
@@ -188,8 +61,16 @@ export default function Customer() {
     setShowDoctorModal(false);
     setSelectedDoctors([]);
   };
-   const handleAddNewCustomer = () => {
-    navigate('/add-customer');
+   const handleDeleteCustomer = async (id) => {
+    if (window.confirm("Are you sure you want to delete this customer?")) {
+      try {
+        await api.delete(`/customers/${id}`);
+        setCustomers(customers.filter((customer) => customer._id !== id));
+      } catch (err) {
+        setError(err.response?.data?.message || "Failed to delete customer.");
+        console.error(err);
+      }
+    }
   };
 
   return (
@@ -210,7 +91,7 @@ export default function Customer() {
           </p>
         </div>
         <button
-          onClick={handleAddNewCustomer}
+          onClick={() => navigate('/add-customer')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
             darkMode
               ? "bg-blue-600 text-white hover:bg-blue-700"
@@ -221,6 +102,11 @@ export default function Customer() {
           Add New Customer
         </button>
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="p-3 bg-red-100 text-red-700 rounded-lg">{error}</div>
+      )}
 
       {/* Cards */}
       <div className="grid grid-cols-3 gap-4">
@@ -404,11 +290,14 @@ export default function Customer() {
       </div>
 
       {/* Table Section */}
-      <div
-        className={`p-4 shadow rounded-md transition-colors duration-300 ${
-          darkMode ? "bg-gray-700 text-gray-100" : "bg-white text-gray-900"
-        }`}
-      >
+      {loading ? (
+        <div className="text-center">Loading customers...</div>
+      ) : (
+        <div
+          className={`p-4 shadow rounded-md transition-colors duration-300 ${
+            darkMode ? "bg-gray-700 text-gray-100" : "bg-white text-gray-900"
+          }`}
+        >
         {/* Search + Filter */}
         <div className="flex items-center gap-4 mb-4">
           <div className="relative">
@@ -454,24 +343,24 @@ export default function Customer() {
             <tbody>
               {customers.map((c, i) => (
                 <tr
-                  key={i}
+                  key={c._id || i}
                   className={`border-t transition-colors duration-300 ${
                     darkMode
                       ? "border-gray-600 hover:bg-gray-600"
                       : "border-gray-200 hover:bg-gray-50"
                   }`}
                 >
-                  <td className="p-3">{c.id}</td>
+                  <td className="p-3">{c._id ? `#CUS${c._id.slice(-3)}` : `#CUS${String(i + 1).padStart(3, '0')}`}</td>
                   <td className="p-3 flex items-center gap-2">
                     {c.name}
                   </td>
                   <td className="p-3">{c.phone}</td>
-                  <td className="p-3">{c.balance}</td>
+                  <td className="p-3">{c.balance || "$0.00"}</td>
                   <td className="p-3 text-center">
                     <Eye
                       size={16}
                       className="cursor-pointer mx-auto"
-                      onClick={() => handleOpenDoctorModal(c.doctors)}
+                      onClick={() => handleOpenDoctorModal(c.doctors || [])}
                     />
                   </td>
                   <td className="p-3 cursor-pointer" onClick={() => handleOpenModal(c)}>
@@ -494,6 +383,7 @@ export default function Customer() {
                           ? "bg-blue-600 text-white hover:bg-blue-700"
                           : "bg-blue-500 text-white hover:bg-blue-600"
                       }`}
+                      onClick={() => navigate(`/edit-customer/${c._id}`)}
                     >
                       <Edit size={16} />
                     </button>
@@ -503,6 +393,7 @@ export default function Customer() {
                           ? "bg-orange-600 text-white hover:bg-orange-700"
                           : "bg-orange-500 text-white hover:bg-orange-600"
                       }`}
+                      onClick={() => handleDeleteCustomer(c._id)}
                     >
                       <Trash2 size={16} />
                     </button>
@@ -519,7 +410,7 @@ export default function Customer() {
             darkMode ? "text-gray-400" : "text-gray-600"
           }`}
         >
-          <span>Showing 1 to 8 of 50 entries</span>
+          <span>Showing 1 to {customers.length} of {customers.length} entries</span>
           <div className="flex items-center gap-2">
             <button
               className={`px-2 py-1 border rounded ${
@@ -588,6 +479,7 @@ export default function Customer() {
           </div>
         </div>
       </div>
+      )}
 
       {/* Order Frequency Modal */}
       {showModal && (

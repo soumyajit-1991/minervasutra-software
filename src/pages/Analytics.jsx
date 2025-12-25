@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   PieChart,
   Pie,
@@ -14,27 +14,24 @@ import {
   BarChart,
   Bar,
 } from "recharts";
-import { Search, Filter, Plus } from "lucide-react";
+import { Search, Filter, Plus, TrendingUp } from "lucide-react";
 import { IoIosArrowDown } from "react-icons/io";
 import { useOutletContext } from "react-router-dom";
 
 export default function Analytics() {
   const { darkMode } = useOutletContext();
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    // Simulate loading
+    setTimeout(() => setLoading(false), 1000);
+  }, []);
 
-
-  const [topMedicines, setTopMedicines] = useState([
-    { name: "Dolo 650", sales: 54647 },
-    { name: "Crosin", sales: 12345 },
-    { name: "Gelusil", sales: 16567 },
-    { name: "Benadryl", sales: 10412 },
-    { name: "Panadol", sales: 9500 },
-    { name: "Amoxicillin", sales: 8900 },
-    { name: "Aspirin", sales: 8700 },
-    { name: "Paracetamol", sales: 8500 },
-    { name: "Ibuprofen", sales: 8300 },
-    { name: "Cough Syrup", sales: 8100 },
-  ]);
+  // Empty data arrays - in a real app, these would come from APIs
+  const topMedicines = [];
+  const revenueExpenseData = [];
+  const customerData = [];
+  const appointmentData = [];
 
   const COLORS = [
     "#4f46e5",
@@ -49,53 +46,16 @@ export default function Analytics() {
     "#f43f5e",
   ];
 
-  // Revenue vs Expense Data
-  const revenueExpenseData = [
-    { month: "Jan", revenue: 10000, expense: 5000 },
-    { month: "Feb", revenue: 12000, expense: 7000 },
-    { month: "Mar", revenue: 13000, expense: 9000 },
-    { month: "Apr", revenue: 15000, expense: 11000 },
-    { month: "May", revenue: 16000, expense: 12000 },
-    { month: "Jun", revenue: 17000, expense: 13000 },
-    { month: "Jul", revenue: 18000, expense: 14000 },
-    { month: "Aug", revenue: 19000, expense: 15000 },
-    { month: "Sep", revenue: 20000, expense: 16000 },
-    { month: "Oct", revenue: 18000, expense: 14000 },
-    { month: "Nov", revenue: 17000, expense: 13000 },
-    { month: "Dec", revenue: 20000, expense: 15000 },
-  ];
-
-  // Customer Data
-  const customerData = [
-    { month: "Jan", customers: 8 },
-    { month: "Feb", customers: 3 },
-    { month: "Mar", customers: 5 },
-    { month: "Apr", customers: 4 },
-    { month: "May", customers: 6 },
-    { month: "Jun", customers: 7 },
-    { month: "Jul", customers: 5 },
-    { month: "Aug", customers: 4 },
-    { month: "Sep", customers: 6 },
-    { month: "Oct", customers: 5 },
-    { month: "Nov", customers: 3 },
-    { month: "Dec", customers: 4 },
-  ];
-
-  // Doctor Appointment Data
-  const appointmentData = [
-    { month: "Jan", appointments: 3 },
-    { month: "Feb", appointments: 1 },
-    { month: "Mar", appointments: 2 },
-    { month: "Apr", appointments: 3 },
-    { month: "May", appointments: 4 },
-    { month: "Jun", appointments: 5 },
-    { month: "Jul", appointments: 10 },
-    { month: "Aug", appointments: 7 },
-    { month: "Sep", appointments: 8 },
-    { month: "Oct", appointments: 9 },
-    { month: "Nov", appointments: 10 },
-    { month: "Dec", appointments: 11 },
-  ];
+  if (loading) {
+    return (
+      <div className={`p-6 space-y-6 ml-64 mt-16 transition-colors duration-300 ${darkMode ? "bg-gray-800 text-gray-100" : "bg-gray-50 text-gray-900"}`}>
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4">Loading analytics...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -127,23 +87,14 @@ export default function Analytics() {
             <IoIosArrowDown className="ml-3" />
           </button>
         </div>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={revenueExpenseData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: darkMode ? "#1f2937" : "#ffffff",
-                color: darkMode ? "#f3f4f6" : "#1f2937",
-                border: darkMode ? "1px solid #4b5563" : "1px solid #e5e7eb",
-              }}
-            />
-            <Legend />
-            <Line type="monotone" dataKey="revenue" stroke="#4f46e5" />
-            <Line type="monotone" dataKey="expense" stroke="#f97316" />
-          </LineChart>
-        </ResponsiveContainer>
+        
+        <div className="flex items-center justify-center h-[300px]">
+          <div className="text-center">
+            <TrendingUp size={48} className={`mx-auto mb-4 ${darkMode ? "text-gray-600" : "text-gray-300"}`} />
+            <p className={`text-lg font-medium ${darkMode ? "text-gray-400" : "text-gray-500"}`}>No revenue data available</p>
+            <p className={`text-sm ${darkMode ? "text-gray-500" : "text-gray-400"}`}>Revenue and expense data will appear here</p>
+          </div>
+        </div>
 
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-medium mt-6 mb-4">Top 10 Selling Medicines</h3>
@@ -158,32 +109,16 @@ export default function Analytics() {
             <IoIosArrowDown className="ml-3" />
           </button>
         </div>
-        <ResponsiveContainer width="100%" height={400}>
-          <PieChart>
-            <Pie
-              data={topMedicines}
-              dataKey="sales"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              outerRadius={150}
-              fill="#4f46e5"
-              label={(entry) => entry.name}
-            >
-              {topMedicines.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip
-              contentStyle={{
-                backgroundColor: darkMode ? "#1f2937" : "#ffffff",
-                color: darkMode ? "#f3f4f6" : "#1f2937",
-                border: darkMode ? "1px solid #4b5563" : "1px solid #e5e7eb",
-              }}
-            />
-            <Legend layout="vertical" verticalAlign="middle" align="right" />
-          </PieChart>
-        </ResponsiveContainer>
+        
+        <div className="flex items-center justify-center h-[400px]">
+          <div className="text-center">
+            <div className={`w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center ${darkMode ? "bg-gray-600" : "bg-gray-200"}`}>
+              <TrendingUp size={32} className={darkMode ? "text-gray-400" : "text-gray-500"} />
+            </div>
+            <p className={`text-lg font-medium ${darkMode ? "text-gray-400" : "text-gray-500"}`}>No sales data available</p>
+            <p className={`text-sm ${darkMode ? "text-gray-500" : "text-gray-400"}`}>Medicine sales data will appear here</p>
+          </div>
+        </div>
 
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-medium mt-6 mb-4">Customer Data</h3>
@@ -198,22 +133,14 @@ export default function Analytics() {
             <IoIosArrowDown className="ml-3" />
           </button>
         </div>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={customerData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: darkMode ? "#1f2937" : "#ffffff",
-                color: darkMode ? "#f3f4f6" : "#1f2937",
-                border: darkMode ? "1px solid #4b5563" : "1px solid #e5e7eb",
-              }}
-            />
-            <Legend />
-            <Bar dataKey="customers" fill="#10b981" />
-          </BarChart>
-        </ResponsiveContainer>
+        
+        <div className="flex items-center justify-center h-[300px]">
+          <div className="text-center">
+            <TrendingUp size={48} className={`mx-auto mb-4 ${darkMode ? "text-gray-600" : "text-gray-300"}`} />
+            <p className={`text-lg font-medium ${darkMode ? "text-gray-400" : "text-gray-500"}`}>No customer data available</p>
+            <p className={`text-sm ${darkMode ? "text-gray-500" : "text-gray-400"}`}>Customer analytics will appear here</p>
+          </div>
+        </div>
 
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-medium mt-6 mb-4">Doctor Appointments</h3>
@@ -228,26 +155,14 @@ export default function Analytics() {
             <IoIosArrowDown className="ml-3" />
           </button>
         </div>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={appointmentData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: darkMode ? "#1f2937" : "#ffffff",
-                color: darkMode ? "#f3f4f6" : "#1f2937",
-                border: darkMode ? "1px solid #4b5563" : "1px solid #e5e7eb",
-              }}
-            />
-            <Legend />
-            <Bar dataKey="appointments" fill="#8b5cf6" />
-          </BarChart>
-        </ResponsiveContainer>
-
-     
         
-     
+        <div className="flex items-center justify-center h-[300px]">
+          <div className="text-center">
+            <TrendingUp size={48} className={`mx-auto mb-4 ${darkMode ? "text-gray-600" : "text-gray-300"}`} />
+            <p className={`text-lg font-medium ${darkMode ? "text-gray-400" : "text-gray-500"}`}>No appointment data available</p>
+            <p className={`text-sm ${darkMode ? "text-gray-500" : "text-gray-400"}`}>Doctor appointment analytics will appear here</p>
+          </div>
+        </div>
       </div>
     </div>
   );

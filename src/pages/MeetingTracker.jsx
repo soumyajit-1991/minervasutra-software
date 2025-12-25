@@ -1,10 +1,18 @@
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import { CalendarDays, Clock, CheckCircle, XCircle, Calendar, Plus, MapPin, Users } from "lucide-react";
-import { meetingTrackerData } from "../data/meetingTrackerData";
 
 export default function MeetingTracker() {
     const { darkMode } = useOutletContext();
-    const { metrics, meetings } = meetingTrackerData;
+    const navigate = useNavigate();
+    
+    // No meeting data available
+    const metrics = {
+        scheduled: 0,
+        completed: 0,
+        cancelled: 0,
+        avgDuration: "0 mins"
+    };
+    const meetings = [];
 
     return (
         <div
@@ -15,7 +23,10 @@ export default function MeetingTracker() {
                 <h1 className="text-2xl font-bold flex items-center gap-2">
                     <CalendarDays /> Meeting Tracker
                 </h1>
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                <button 
+                    onClick={() => navigate('/add-interview')}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                >
                     <Plus size={18} /> Schedule Meeting
                 </button>
             </div>
@@ -62,70 +73,10 @@ export default function MeetingTracker() {
                     </div>
                 </div>
 
-                <div className="divide-y dark:divide-gray-700">
-                    {meetings.map((meeting) => (
-                        <div 
-                            key={meeting.id} 
-                            // Hover fix from previous response applied
-                            className={`p-4 transition-colors ${darkMode ? "dark:hover:bg-gray-700" : "hover:bg-gray-100"}`}
-                        >
-                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                <div className="flex gap-4 items-start">
-                                    <img src={meeting.avatar} alt={meeting.organizer} className="w-10 h-10 rounded-full object-cover" />
-                                    <div>
-                                        <h3 className="font-semibold text-sm md:text-base">{meeting.title}</h3>
-                                        <p className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                                            Organized by {meeting.organizer} • {meeting.id}
-                                        </p>
-                                        <div className="flex flex-wrap gap-3 mt-2 text-xs">
-                                            <div className={`flex items-center gap-1 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-                                                <Calendar size={14} />
-                                                <span>{meeting.date}</span>
-                                            </div>
-                                            <div className={`flex items-center gap-1 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-                                                <Clock size={14} />
-                                                <span>{meeting.time} ({meeting.duration})</span>
-                                            </div>
-                                            <div className={`flex items-center gap-1 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-                                                <MapPin size={14} />
-                                                <span>{meeting.location}</span>
-                                            </div>
-                                            <div className={`flex items-center gap-1 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-                                                <Users size={14} />
-                                                <span>{meeting.attendees.join(", ")}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center gap-4 text-sm justify-between md:justify-end min-w-[200px]">
-                                    <div className={`px-2 py-1 rounded text-xs font-medium 
-                                        ${meeting.status === 'Scheduled' 
-                                            // 🚀 FIX: Increased Scheduled tag contrast in light mode
-                                            ? 'bg-blue-200 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200' 
-                                            : meeting.status === 'Completed' 
-                                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200' 
-                                                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'}
-                                        `}>
-                                        {meeting.status}
-                                    </div>
-                                    <div className={`px-2 py-1 rounded text-xs font-medium 
-                                        ${meeting.priority === 'Critical' 
-                                            ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200' 
-                                            : meeting.priority === 'High' 
-                                                // 🚀 FIX: Increased High priority tag contrast in light mode
-                                                ? 'bg-orange-200 text-orange-700 dark:bg-orange-900/30 dark:text-orange-200' 
-                                                : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200'}
-                                        `}>
-                                        {meeting.priority}
-                                    </div>
-                                    <span className={`px-2 py-1 rounded text-xs ${darkMode ? "bg-gray-700 text-gray-300" : "bg-gray-100 text-gray-700"}`}>
-                                        {meeting.type}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                <div className="p-8 text-center">
+                    <CalendarDays size={48} className={`mx-auto mb-4 ${darkMode ? "text-gray-700" : "text-gray-300"}`} />
+                    <p className="text-lg font-medium">No meetings scheduled</p>
+                    <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>Schedule your first meeting to get started</p>
                 </div>
             </div>
         </div>

@@ -103,13 +103,14 @@ export default function EditInterview() {
 
                                     <div>
                                           <label className={`block text-sm font-medium mb-1 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>Interview Type</label>
-                                          <select name="interviewType" value={formData.interviewType} onChange={handleChange} className={`w-full p-2 rounded border outline-none ${darkMode ? "bg-gray-700 border-gray-600 text-white" : "bg-white border-gray-300"}`}>
-                                                <option>Phone Screening</option>
-                                                <option>Technical Assessment</option>
-                                                <option>First Round</option>
-                                                <option>Final Interview</option>
-                                                <option>HR Round</option>
-                                          </select>
+                                          <select name="interviewType" value={formData.interviewType} onChange={handleChange}>
+  <option>Phone Screening</option>
+  <option>Technical Interview</option>
+  <option>Panel Interview</option>
+  <option>Final Interview</option>
+  <option>HR Round</option>
+</select>
+
                                     </div>
 
                                     <LabeledInput label="Interviewer" name="interviewer" value={formData.interviewer} onChange={handleChange} error={errors.interviewer} darkMode={darkMode} />

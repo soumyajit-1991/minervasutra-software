@@ -5,17 +5,9 @@ import Chart from "chart.js/auto";
 import Card from "../components/common/Card";
 import PageHeader from "../components/common/PageHeader";
 import StatBadge from "../components/common/StatBadge";
-import { EmployeeProvider, useEmployees } from "../context/EmployeeContext";
+import { useEmployees } from "../context/EmployeeContext";
 
 export default function EmployeePage() {
-  return (
-    <EmployeeProvider>
-      <EmployeeContent />
-    </EmployeeProvider>
-  );
-}
-
-function EmployeeContent() {
   const { darkMode } = useOutletContext();
   const navigate = useNavigate();
   const { employees, loading, error, deleteEmployee, updateEmployee } = useEmployees();
@@ -40,7 +32,7 @@ function EmployeeContent() {
 
   const uniqueLocations = useMemo(
     () =>
-      ["all", ...new Set(employees.map((e) => (e.address || "").split(",")[0].trim()).filter(Boolean))],
+      ["all", ...new Set(employees.map((e) => e.location || "").filter(Boolean))],
     [employees]
   );
 
@@ -48,12 +40,12 @@ function EmployeeContent() {
     const term = searchTerm.toLowerCase();
     return employees
       .filter((e) => (roleFilter === "all" ? true : e.role === roleFilter))
-      .filter((e) => (locationFilter === "all" ? true : e.address.startsWith(locationFilter)))
+      .filter((e) => (locationFilter === "all" ? true : e.location === locationFilter))
       .filter(
         (e) =>
           e.name.toLowerCase().includes(term) ||
           e.email.toLowerCase().includes(term) ||
-          e.id.toLowerCase().includes(term)
+          (e._id && e._id.toLowerCase().includes(term))
       )
       .sort((a, b) => {
         if (sortKey === "salary") return b.salary - a.salary;
@@ -160,20 +152,19 @@ function EmployeeContent() {
   const handleSaveEdit = (e) => {
     e.preventDefault();
     if (selected && editable) {
-      updateEmployee(selected.id, editable);
+      updateEmployee(selected._id, editable);
       setPanelOpen(false);
     }
   };
 
   const exportCsv = () => {
     const rows = filteredEmployees.map((emp) => ({
-      id: emp.id,
+      id: emp._id,
       name: emp.name,
-      mobile: emp.mobile,
+      phone: emp.phone,
       email: emp.email,
-      aadhaar: emp.aadhaar,
-      address: emp.address,
-      gender: emp.gender,
+      department: emp.department,
+      location: emp.location,
       role: emp.role,
       salary: emp.salary,
     }));
@@ -294,13 +285,10 @@ function EmployeeContent() {
               <tr>
                 <th className="p-3">Employee ID</th>
                 <th className="p-3">Name</th>
-                <th className="p-3">Username</th>
-                <th className="p-3">Password</th>
-                <th className="p-3">Mobile</th>
+                <th className="p-3">Phone</th>
                 <th className="p-3">Email</th>
-                <th className="p-3">Aadhaar</th>
-                <th className="p-3">Address</th>
-                <th className="p-3">Gender</th>
+                <th className="p-3">Department</th>
+                <th className="p-3">Location</th>
                 <th className="p-3">Role</th>
                 <th className="p-3">Salary</th>
                 <th className="p-3">Action</th>
@@ -326,15 +314,12 @@ function EmployeeContent() {
                     className={`border-t transition-colors duration-300 ${darkMode ? "border-gray-600 hover:bg-gray-700" : "border-gray-200 hover:bg-gray-50"
                       }`}
                   >
-                    <td className="p-3">{emp.id}</td>
+                    <td className="p-3">{emp._id}</td>
                     <td className="p-3 font-medium">{emp.name}</td>
-                    <td className="p-3">{emp.username}</td>
-                    <td className="p-3 font-mono">{emp.password}</td>
-                    <td className="p-3">{emp.mobile}</td>
+                    <td className="p-3">{emp.phone}</td>
                     <td className="p-3">{emp.email}</td>
-                    <td className="p-3">{emp.aadhaar}</td>
-                    <td className="p-3">{emp.address}</td>
-                    <td className="p-3">{emp.gender}</td>
+                    <td className="p-3">{emp.department}</td>
+                    <td className="p-3">{emp.location}</td>
                     <td className="p-3">{emp.role}</td>
                     <td className="p-3">₹{emp.salary}</td>
                     <td className="p-3 flex gap-2">
@@ -415,15 +400,16 @@ function EmployeeContent() {
 
             {panelMode === "view" && (
               <div className="space-y-3 text-sm">
-                <InfoRow label="Employee ID" value={selected.id} />
+                <InfoRow label="Employee ID" value={selected._id} />
                 <InfoRow label="Name" value={selected.name} />
-                <InfoRow label="Mobile" value={selected.mobile} />
+                <InfoRow label="Phone" value={selected.phone} />
                 <InfoRow label="Email" value={selected.email} />
-                <InfoRow label="Aadhaar" value={selected.aadhaar} />
-                <InfoRow label="Address" value={selected.address} />
-                <InfoRow label="Gender" value={selected.gender} />
+                <InfoRow label="Department" value={selected.department} />
+                <InfoRow label="Location" value={selected.location} />
                 <InfoRow label="Role" value={selected.role} />
-                <InfoRow label="Salary" value={`$${selected.salary}`} />
+                <InfoRow label="Salary" value={`₹${selected.salary}`} />
+                <InfoRow label="Gender" value={selected.personalInfo?.gender || 'Not specified'} />
+                <InfoRow label="Address" value={selected.personalInfo?.address || 'Not specified'} />
               </div>
             )}
 
@@ -436,9 +422,9 @@ function EmployeeContent() {
                   required
                 />
                 <LabeledInput
-                  label="Mobile"
-                  value={editable.mobile}
-                  onChange={(e) => setEditable({ ...editable, mobile: e.target.value })}
+                  label="Phone"
+                  value={editable.phone}
+                  onChange={(e) => setEditable({ ...editable, phone: e.target.value })}
                   required
                 />
                 <LabeledInput
@@ -449,29 +435,17 @@ function EmployeeContent() {
                   required
                 />
                 <LabeledInput
-                  label="Aadhaar"
-                  value={editable.aadhaar}
-                  onChange={(e) => setEditable({ ...editable, aadhaar: e.target.value })}
+                  label="Department"
+                  value={editable.department}
+                  onChange={(e) => setEditable({ ...editable, department: e.target.value })}
                   required
                 />
                 <LabeledInput
-                  label="Address"
-                  value={editable.address}
-                  onChange={(e) => setEditable({ ...editable, address: e.target.value })}
+                  label="Location"
+                  value={editable.location}
+                  onChange={(e) => setEditable({ ...editable, location: e.target.value })}
+                  required
                 />
-                <label className="flex flex-col gap-1 text-sm">
-                  <span className="text-gray-600 dark:text-gray-300">Gender</span>
-                  <select
-                    className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-400 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
-                    value={editable.gender || ""}
-                    onChange={(e) => setEditable({ ...editable, gender: e.target.value })}
-                  >
-                    <option value="">Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </label>
                 <LabeledInput
                   label="Role"
                   value={editable.role}

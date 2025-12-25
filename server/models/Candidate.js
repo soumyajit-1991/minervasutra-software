@@ -1,82 +1,93 @@
 const mongoose = require('mongoose');
 
-const CandidateSchema = new mongoose.Schema({
-      candidateId: {
-            type: String,
-            required: true,
-            unique: true
-      },
-      name: {
-            type: String,
-            required: true,
-            trim: true
-      },
-      email: {
-            type: String,
-            required: true,
-            trim: true,
-            lowercase: true,
-            match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address.']
-      },
-      phone: {
-            type: String,
-            required: true,
-            trim: true
-      },
-      position: {
-            type: String,
-            required: true,
-            trim: true
-      },
-      experience: {
-            type: String,
-            trim: true
-      },
-      appliedDate: {
-            type: String, // Keeping as string to match format "YYYY-MM-DD" or similar easily
-            default: () => new Date().toISOString().split('T')[0]
-      },
-      recruiter: {
-            type: String,
-            trim: true
-      },
-      stage: {
-            type: String,
-            default: 'Screening',
-            enum: ['Screening', 'Phone Interview', 'Technical Interview', 'Final Interview', 'Offer', 'Rejected']
-      },
-      status: {
-            type: String,
-            default: 'Active',
-            enum: ['Active', 'Rejected', 'Hired']
-      },
-      rating: {
-            type: Number,
-            min: 0,
-            max: 5,
-            default: 0
-      },
-      nextStep: {
-            type: String,
-            default: 'Review Application'
-      },
-      avatar: {
-            type: String,
-            default: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150' // Default placeholder
-      },
-      createdAt: {
-            type: Date,
-            default: Date.now
-      },
-      updatedAt: {
-            type: Date,
-            default: Date.now
-      }
+const candidateSchema = new mongoose.Schema({
+  candidateId: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  name: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true
+  },
+  phone: {
+    type: String,
+    required: true
+  },
+  avatar: {
+    type: String,
+    default: ''
+  },
+  position: {
+    type: String,
+    required: true
+  },
+  jobPostingId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'JobPosting'
+  },
+  stage: {
+    type: String,
+    enum: ['Screening', 'Phone Interview', 'Technical Interview', 'Final Interview', 'Offer', 'Rejected', 'Hired'],
+    default: 'Screening'
+  },
+  appliedDate: {
+    type: Date,
+    default: Date.now
+  },
+  experience: {
+    type: String,
+    required: true
+  },
+  rating: {
+    type: Number,
+    min: 0,
+    max: 5,
+    default: 0
+  },
+  status: {
+    type: String,
+    enum: ['Active', 'Closed', 'On Hold'],
+    default: 'Active'
+  },
+  nextStep: {
+    type: String,
+    default: ''
+  },
+  recruiter: {
+    type: String,
+    required: true
+  },
+  resume: {
+    filename: String,
+    url: String,
+    uploadDate: Date
+  },
+  notes: [{
+    content: String,
+    author: String,
+    date: { type: Date, default: Date.now }
+  }],
+  skills: [{
+    type: String
+  }],
+  education: [{
+    degree: String,
+    institution: String,
+    year: String
+  }],
+  workExperience: [{
+    company: String,
+    role: String,
+    duration: String,
+    description: String
+  }]
+}, {
+  timestamps: true
 });
 
-CandidateSchema.pre('save', function (next) {
-      this.updatedAt = Date.now();
-      next();
-});
-
-module.exports = mongoose.model('Candidate', CandidateSchema);
+module.exports = mongoose.model('Candidate', candidateSchema);

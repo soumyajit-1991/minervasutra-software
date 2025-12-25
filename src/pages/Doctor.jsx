@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Eye, Edit, Trash2, Search, Filter, Plus, ScrollText } from "lucide-react";
 import { IoIosArrowDown } from "react-icons/io";
@@ -11,16 +11,32 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import api from "../components/axios";
 
 export default function Doctor() {
   const { darkMode } = useOutletContext();
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
+  const [doctors, setDoctors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const [doctors, setDoctors] = useState([
-    { name: "Dr. A.K", specialty: "General Physician", phone: "01893531209", fees: 1200, clinic: 1000, day: "Mon, Tue, Sat", time: "10:00 am to 12:00pm" },
-    { name: "Dr. A.G", specialty: "Cardiologist", phone: "01893531210", fees: 1500, clinic: 1000, day: "Mon, Tue, Sat", time: "10:00 am to 12:00pm" },
-    { name: "Dr. J.K", specialty: "Pediatrician", phone: "01893531211", fees: 1000, clinic: 1000, day: "Mon, Tue, Sat", time: "10:00 am to 12:00pm" },
-  ]);
+  // Fetch doctors from backend
+  const fetchDoctors = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get("/doctors");
+      setDoctors(response.data);
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to fetch doctors.");
+      setLoading(false);
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchDoctors();
+  }, []);
 
   // Modal state
   const [showModal, setShowModal] = useState(false);
@@ -45,13 +61,16 @@ export default function Doctor() {
     setSelectedDoctor(null);
   };
 
-  // Navigation handlers
-  const handleAddDoctor = () => {
-    navigate("/add-doctor");
-  };
-
-  const handleAddAppointment = () => {
-    navigate("/add-appointment");
+  const handleDeleteDoctor = async (id) => {
+    if (window.confirm("Are you sure you want to delete this doctor?")) {
+      try {
+        await api.delete(`/doctors/${id}`);
+        setDoctors(doctors.filter((doctor) => doctor._id !== id));
+      } catch (err) {
+        setError(err.response?.data?.message || "Failed to delete doctor.");
+        console.error(err);
+      }
+    }
   };
 
   return (
@@ -69,7 +88,7 @@ export default function Doctor() {
         </div>
         <div className="flex gap-2">
           <button
-            onClick={handleAddDoctor}
+            onClick={() => navigate("/add-doctor")}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
               darkMode
                 ? "bg-blue-600 text-white hover:bg-blue-700"
@@ -80,7 +99,7 @@ export default function Doctor() {
             Add New Doctor
           </button>
           <button
-            onClick={handleAddAppointment}
+            onClick={() => navigate("/add-appointment")}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
               darkMode
                 ? "bg-blue-600 text-white hover:bg-blue-700"
@@ -93,11 +112,19 @@ export default function Doctor() {
         </div>
       </div>
 
-      <div
-        className={`p-4 shadow rounded-md transition-colors duration-300 ${
-          darkMode ? "bg-gray-700 text-gray-100" : "bg-white text-gray-900"
-        }`}
-      >
+      {/* Error Message */}
+      {error && (
+        <div className="p-3 bg-red-100 text-red-700 rounded-lg">{error}</div>
+      )}
+
+      {loading ? (
+        <div className="text-center">Loading doctors...</div>
+      ) : (
+        <div
+          className={`p-4 shadow rounded-md transition-colors duration-300 ${
+            darkMode ? "bg-gray-700 text-gray-100" : "bg-white text-gray-900"
+          }`}
+        >
         <div className="flex items-center gap-4 mb-4">
           <div className="relative">
             <Search
@@ -143,7 +170,7 @@ export default function Doctor() {
             <tbody>
               {doctors.map((doc, index) => (
                 <tr
-                  key={index}
+                  key={doc._id || index}
                   className={`border-t transition-colors duration-300 ${
                     darkMode
                       ? "border-gray-600 hover:bg-gray-600"
@@ -167,6 +194,7 @@ export default function Doctor() {
                           ? "bg-blue-600 text-white hover:bg-blue-700"
                           : "bg-blue-500 text-white hover:bg-blue-600"
                       }`}
+                      onClick={() => navigate(`/edit-doctor/${doc._id}`)}
                     >
                       <Edit size={16} />
                     </button>
@@ -176,6 +204,7 @@ export default function Doctor() {
                           ? "bg-orange-600 text-white hover:bg-orange-700"
                           : "bg-orange-500 text-white hover:bg-orange-600"
                       }`}
+                      onClick={() => handleDeleteDoctor(doc._id)}
                     >
                       <Trash2 size={16} />
                     </button>
@@ -191,7 +220,7 @@ export default function Doctor() {
             darkMode ? "text-gray-400" : "text-gray-600"
           }`}
         >
-          <span>Showing 1 to 3 of 50 entries</span>
+          <span>Showing 1 to {doctors.length} of {doctors.length} entries</span>
           <div className="flex items-center gap-2">
             <button
               className={`px-2 py-1 border rounded ${
@@ -260,6 +289,7 @@ export default function Doctor() {
           </div>
         </div>
       </div>
+      )}
 
       {/* Graph Only Modal */}
       {showModal && (

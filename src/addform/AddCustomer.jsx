@@ -1,16 +1,20 @@
 import { useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
+import api from "../components/axios";
 
 export default function AddCustomer() {
   const { darkMode } = useOutletContext();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     balance: "",
     address: "",
-    doctors: [{ name: "", isInHouse: false }],
+    doctors: [{ name: "", inClinic: false }],
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e, index) => {
     const { name, value, type, checked } = e.target;
@@ -28,21 +32,22 @@ export default function AddCustomer() {
   const addDoctor = () => {
     setFormData((prev) => ({
       ...prev,
-      doctors: [...prev.doctors, { name: "", isInHouse: false }],
+      doctors: [...prev.doctors, { name: "", inClinic: false }],
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("New Customer Added:", formData);
-    // Add logic to save customer data
-    setFormData({
-      name: "",
-      phone: "",
-      balance: "",
-      address: "",
-      doctors: [{ name: "", isInHouse: false }],
-    });
+    setLoading(true);
+    setError("");
+    
+    try {
+      await api.post("/customers", formData);
+      navigate("/customer");
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to add customer");
+      setLoading(false);
+    }
   };
 
   return (
@@ -59,6 +64,11 @@ export default function AddCustomer() {
           </p>
         </div>
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="p-3 bg-red-100 text-red-700 rounded-lg mb-4">{error}</div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* <div>
@@ -144,8 +154,8 @@ export default function AddCustomer() {
               <div className="flex items-center">
                 <input
                   type="checkbox"
-                  name="isInHouse"
-                  checked={doctor.isInHouse}
+                  name="inClinic"
+                  checked={doctor.inClinic}
                   onChange={(e) => handleChange(e, index)}
                   className={`mr-2 ${darkMode ? "text-gray-100" : "text-gray-900"}`}
                 />
@@ -168,14 +178,15 @@ export default function AddCustomer() {
         </div>
         <button
           type="submit"
+          disabled={loading}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
             darkMode
-              ? "bg-blue-600 text-white hover:bg-blue-700"
-              : "bg-blue-600 text-white hover:bg-blue-700"
+              ? "bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-600"
+              : "bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-400"
           }`}
         >
           <Plus size={18} />
-          Add Customer
+          {loading ? "Adding..." : "Add Customer"}
         </button>
       </form>
     </div>

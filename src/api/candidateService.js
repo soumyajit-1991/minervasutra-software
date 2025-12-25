@@ -1,10 +1,11 @@
 import { API_BASE_URL } from "../config";
 import { safeJsonParse, safeFetch } from "../utils/apiHelpers";
+import { withCache, dataCache } from "../utils/dataCache";
 
 const API_BASE = API_BASE_URL;
 
-// Fetch all candidates
-export async function fetchCandidates() {
+// Cached version of fetchCandidates
+const _fetchCandidates = async () => {
       const response = await safeFetch(`${API_BASE}/api/candidates`);
       if (!response.ok) {
             const message = await response.text();
@@ -12,7 +13,9 @@ export async function fetchCandidates() {
       }
       const data = await safeJsonParse(response);
       return data.map(mapCandidateFromApi);
-}
+};
+
+export const fetchCandidates = withCache('candidates', _fetchCandidates, 2 * 60 * 1000); // 2 min cache
 
 // Fetch single candidate
 export async function fetchCandidateById(id) {
@@ -39,6 +42,10 @@ export async function createCandidate(candidate) {
       }
 
       const data = await safeJsonParse(response);
+      
+      // Clear cache after creating new candidate
+      dataCache.delete('candidates_[]');
+      
       return mapCandidateFromApi(data);
 }
 
@@ -71,7 +78,8 @@ export async function deleteCandidate(id) {
 
 // Mapper helper
 const mapCandidateFromApi = (c) => ({
-      id: c.candidateId || c._id, // Prefer custom ID
+      id: c.candidateId || c._id, // Prefer custom ID for display
+      _id: c._id, // Preserve MongoDB ObjectId for backend operations
       ...c,
       // Ensure fields match frontend expectations
       appliedDate: c.appliedDate ? new Date(c.appliedDate).toLocaleDateString() : 'N/A'

@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Plus, Save } from "lucide-react";
 import { createInterview } from "../api/interviewService";
+import { fetchCandidates } from "../api/candidateService";
 
 export default function AddInterview() {
       const { darkMode } = useOutletContext();
       const navigate = useNavigate();
 
       const [formData, setFormData] = useState({
+            candidateId: "",
             candidateName: "",
             position: "",
             interviewType: "Phone Screening",
@@ -21,18 +23,32 @@ export default function AddInterview() {
             status: "Scheduled"
       });
 
+      const [candidates, setCandidates] = useState([]);
       const [errors, setErrors] = useState({});
+
+      useEffect(() => {
+            fetchCandidates().then(setCandidates).catch(console.error);
+      }, []);
 
       const handleChange = (e) => {
             const { name, value } = e.target;
-            setFormData({ ...formData, [name]: value });
+            if (name === 'candidateId') {
+                  const selectedCandidate = candidates.find(c => c._id === value);
+                  setFormData({ 
+                        ...formData, 
+                        candidateId: value,
+                        candidateName: selectedCandidate?.name || '',
+                        position: selectedCandidate?.position || ''
+                  });
+            } else {
+                  setFormData({ ...formData, [name]: value });
+            }
             setErrors({ ...errors, [name]: "" });
       };
 
       const validateForm = () => {
             const newErrors = {};
-            if (!formData.candidateName.trim()) newErrors.candidateName = "Candidate Name is required";
-            if (!formData.position.trim()) newErrors.position = "Position is required";
+            if (!formData.candidateId) newErrors.candidateId = "Please select a candidate";
             if (!formData.interviewer.trim()) newErrors.interviewer = "Interviewer is required";
             if (!formData.date) newErrors.date = "Date is required";
             if (!formData.time) newErrors.time = "Time is required";
@@ -63,8 +79,25 @@ export default function AddInterview() {
                   <div className={`p-6 rounded-lg shadow-md ${darkMode ? "bg-gray-800" : "bg-white"}`}>
                         <form onSubmit={handleSubmit} className="space-y-4">
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <LabeledInput label="Candidate Name" name="candidateName" value={formData.candidateName} onChange={handleChange} error={errors.candidateName} darkMode={darkMode} />
-                                    <LabeledInput label="Position" name="position" value={formData.position} onChange={handleChange} error={errors.position} darkMode={darkMode} />
+                                    <div>
+                                          <label className={`block text-sm font-medium mb-1 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>Select Candidate *</label>
+                                          <select 
+                                                name="candidateId" 
+                                                value={formData.candidateId} 
+                                                onChange={handleChange} 
+                                                className={`w-full p-2 rounded border outline-none ${darkMode ? "bg-gray-700 border-gray-600 text-white" : "bg-white border-gray-300"} ${errors.candidateId ? "border-red-500" : ""}`}
+                                                required
+                                          >
+                                                <option value="">Select a candidate</option>
+                                                {candidates.map(candidate => (
+                                                      <option key={candidate._id} value={candidate._id}>
+                                                            {candidate.name} - {candidate.position}
+                                                      </option>
+                                                ))}
+                                          </select>
+                                          {errors.candidateId && <p className="text-red-500 text-xs mt-1">{errors.candidateId}</p>}
+                                    </div>
+                                    <LabeledInput label="Position" name="position" value={formData.position} onChange={handleChange} error={errors.position} darkMode={darkMode} readOnly />
 
                                     <div>
                                           <label className={`block text-sm font-medium mb-1 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>Interview Type</label>

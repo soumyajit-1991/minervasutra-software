@@ -17,6 +17,21 @@ export default function OfferManagement() {
                   .finally(() => setLoading(false));
       }, []);
 
+      const handleDelete = async (offerId, mongoId) => {
+            if (window.confirm("Are you sure you want to delete this offer?")) {
+                  try {
+                        // Use MongoDB _id for API call
+                        await deleteOffer(mongoId);
+                        // Filter by custom id for state update
+                        setOffers(prev => prev.filter(o => o.id !== offerId));
+                        alert("Offer deleted successfully!");
+                  } catch (err) {
+                        console.error("Delete error:", err);
+                        alert(err.message || "Failed to delete offer");
+                  }
+            }
+      };
+
       const metrics = useMemo(() => {
             return {
                   totalOffers: offers.length,
@@ -195,23 +210,13 @@ export default function OfferManagement() {
 
                                                             <div className="flex gap-2 mt-2">
                                                                   <button
-                                                                        onClick={() => navigate(`/edit-offer/${offer.offerId}`)}
+                                                                        onClick={() => navigate(`/edit-offer/${offer._id}`)}
                                                                         className={`text-xs px-3 py-1 rounded ${darkMode ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-200 hover:bg-gray-300"} transition-colors`}
                                                                   >
                                                                         Edit
                                                                   </button>
                                                                   <button
-                                                                        onClick={async () => {
-                                                                              if (window.confirm("Are you sure you want to delete this offer?")) {
-                                                                                    try {
-                                                                                          await deleteOffer(offer.offerId);
-                                                                                          setOffers(prev => prev.filter(o => o.offerId !== offer.offerId));
-                                                                                    } catch (err) {
-                                                                                          console.error(err);
-                                                                                          alert("Failed to delete offer");
-                                                                                    }
-                                                                              }
-                                                                        }}
+                                                                        onClick={() => handleDelete(offer.id, offer._id)}
                                                                         className={`text-xs px-3 py-1 rounded ${darkMode ? "bg-red-600 hover:bg-red-700" : "bg-red-600 hover:bg-red-700"} text-white transition-colors`}
                                                                   >
                                                                         Delete

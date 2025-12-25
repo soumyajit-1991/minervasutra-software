@@ -72,5 +72,6 @@ export async function deleteInterview(id) {
 // Mapper helper
 const mapInterviewFromApi = (i) => ({
       id: i.interviewId || i._id,
+      _id: i._id, // Preserve MongoDB ObjectId for backend operations
       ...i
 });

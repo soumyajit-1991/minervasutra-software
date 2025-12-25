@@ -1,10 +1,82 @@
 import { useOutletContext } from "react-router-dom";
-import { ListTodo, Clock, CheckCircle, AlertCircle, Calendar, Plus, Tag } from "lucide-react";
-import { taskManagementData } from "../data/taskManagementData";
+import { ListTodo, Clock, CheckCircle, AlertCircle, Calendar, Plus, Tag, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { fetchTasks, createTask, deleteTask } from "../api/taskService";
 
 export default function TaskManagement() {
       const { darkMode } = useOutletContext();
-      const { metrics, tasks } = taskManagementData;
+      const [tasks, setTasks] = useState([]);
+      const [loading, setLoading] = useState(true);
+
+      const [showModal, setShowModal] = useState(false);
+      const [formData, setFormData] = useState({
+            title: '',
+            description: '',
+            assignedTo: '',
+            priority: 'Medium',
+            dueDate: '',
+            category: 'General'
+      });
+
+      useEffect(() => {
+            loadTasks();
+      }, []);
+
+      const loadTasks = async () => {
+            try {
+                  const data = await fetchTasks();
+                  setTasks(data);
+            } catch (error) {
+                  console.error('Failed to load tasks:', error);
+            } finally {
+                  setLoading(false);
+            }
+      };
+
+      const metrics = {
+            total: tasks.length,
+            inProgress: tasks.filter(t => t.status === 'In Progress').length,
+            completed: tasks.filter(t => t.status === 'Completed').length,
+            overdue: tasks.filter(t => t.status === 'Overdue').length
+      };
+
+      const handleCreateTask = () => {
+            setShowModal(true);
+      };
+
+      const handleSubmit = async (e) => {
+            e.preventDefault();
+            try {
+                  await createTask(formData);
+                  setShowModal(false);
+                  setFormData({ title: '', description: '', assignedTo: '', priority: 'Medium', dueDate: '', category: 'General' });
+                  loadTasks();
+            } catch (error) {
+                  alert('Failed to create task: ' + error.message);
+            }
+      };
+
+      const handleDelete = async (id) => {
+            if (window.confirm('Delete this task?')) {
+                  try {
+                        await deleteTask(id);
+                        loadTasks();
+                  } catch (error) {
+                        alert('Failed to delete task: ' + error.message);
+                  }
+            }
+      };
+
+      if (loading) {
+            return (
+                  <div className={`p-6 ml-64 mt-16 min-h-screen transition-colors duration-300 ${darkMode ? "bg-gray-900 text-gray-100" : "bg-gray-50 text-gray-900"}`}>
+                        <div className="text-center py-12">
+                              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                              <p className="mt-4">Loading tasks...</p>
+                        </div>
+                  </div>
+            );
+      }
 
       return (
             <div
@@ -15,7 +87,10 @@ export default function TaskManagement() {
                         <h1 className="text-2xl font-bold flex items-center gap-2">
                               <ListTodo /> Task Management
                         </h1>
-                        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                        <button 
+                              onClick={handleCreateTask}
+                              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                        >
                               <Plus size={18} /> Create Task
                         </button>
                   </div>
@@ -70,91 +145,96 @@ export default function TaskManagement() {
                         </div>
 
                         <div className="divide-y dark:divide-gray-700">
-                              {tasks.map((task) => (
-                                    <div
-                                          key={task.id}
-                                          className={`p-4 transition-colors ${darkMode ? "bg-gray-800 hover:bg-gray-700" : "bg-white hover:bg-gray-100"}`}
-                                    >
-                                          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                                <div className="flex gap-4 items-start flex-1">
-                                                      <img src={task.avatar} alt={task.assignedTo} className="w-10 h-10 rounded-full object-cover" />
+                              {tasks.length === 0 ? (
+                                    <div className="p-8 text-center">
+                                          <ListTodo size={48} className={`mx-auto mb-4 ${darkMode ? "text-gray-700" : "text-gray-300"}`} />
+                                          <p className="text-lg font-medium">No tasks available</p>
+                                          <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>Create your first task to get started</p>
+                                    </div>
+                              ) : (
+                                    tasks.map((task) => (
+                                          <div key={task._id} className={`p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors`}>
+                                                <div className="flex justify-between items-start">
                                                       <div className="flex-1">
-                                                            <div className="flex items-start justify-between gap-2">
-                                                                  <div>
-                                                                        <h3 className="font-semibold text-sm md:text-base">{task.title}</h3>
-                                                                        <p className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                                                                              Assigned to {task.assignedTo} • {task.id}
-                                                                        </p>
-                                                                  </div>
-                                                            </div>
-                                                            <p className={`text-sm mt-2 ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
-                                                                  {task.description}
-                                                            </p>
-
-                                                            {/* Progress Bar */}
-                                                            <div className="mt-3">
-                                                                  <div className="flex justify-between text-xs mb-1">
-                                                                        <span className={`${darkMode ? "text-gray-400" : "text-gray-600"}`}>Progress</span>
-                                                                        <span className="font-medium">{task.progress}%</span>
-                                                                  </div>
-                                                                  <div className={`w-full h-2 rounded-full ${darkMode ? "bg-gray-700" : "bg-gray-200"}`}>
-                                                                        <div
-                                                                              className={`h-full rounded-full ${task.status === 'Completed' ? 'bg-green-500' :
-                                                                                          task.status === 'Overdue' ? 'bg-red-500' :
-                                                                                                task.status === 'In Progress' ? 'bg-blue-500' : 'bg-gray-400'
-                                                                                    }`}
-                                                                              style={{ width: `${task.progress}%` }}
-                                                                        ></div>
-                                                                  </div>
-                                                            </div>
-
-                                                            {/* Tags */}
-                                                            <div className="flex flex-wrap gap-2 mt-3">
-                                                                  {task.tags.map((tag, index) => (
-                                                                        <span
-                                                                              key={index}
-                                                                              className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${darkMode ? "bg-gray-700 text-gray-300" : "bg-gray-100 text-gray-700"
-                                                                                    }`}
-                                                                        >
-                                                                              <Tag size={12} />
-                                                                              {tag}
-                                                                        </span>
-                                                                  ))}
+                                                            <h3 className="font-semibold">{task.title}</h3>
+                                                            <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"} mt-1`}>{task.description}</p>
+                                                            <div className="flex items-center gap-4 mt-2 text-xs">
+                                                                  <span>Assigned: {task.assignedTo}</span>
+                                                                  <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
+                                                                  <span className={`px-2 py-1 rounded ${task.priority === 'Critical' ? 'bg-red-100 text-red-800' : task.priority === 'High' ? 'bg-orange-100 text-orange-800' : 'bg-blue-100 text-blue-800'}`}>
+                                                                        {task.priority}
+                                                                  </span>
                                                             </div>
                                                       </div>
-                                                </div>
-
-                                                <div className="flex flex-col gap-2 items-end min-w-[180px]">
-                                                      <div className="flex gap-2 flex-wrap justify-end">
-                                                            <div className={`px-2 py-1 rounded text-xs font-medium 
-                                                                  ${task.status === 'Completed' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200' :
-                                                                        task.status === 'In Progress' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200' :
-                                                                              task.status === 'Overdue' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200' :
-                                                                                    'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-200'}
-                                                            `}>
-                                                                  {task.status}
-                                                            </div>
-                                                            <div className={`px-2 py-1 rounded text-xs font-medium 
-                                                                  ${task.priority === 'Critical' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200' :
-                                                                        task.priority === 'High' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200' :
-                                                                              'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200'}
-                                                            `}>
-                                                                  {task.priority}
-                                                            </div>
-                                                      </div>
-                                                      <div className={`flex items-center gap-1 text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                                                            <Calendar size={14} />
-                                                            <span>Due: {task.dueDate}</span>
-                                                      </div>
-                                                      <span className={`px-2 py-1 rounded text-xs ${darkMode ? "bg-gray-700 text-gray-300" : "bg-gray-100 text-gray-700"}`}>
-                                                            {task.category}
-                                                      </span>
+                                                      <button onClick={() => handleDelete(task._id)} className="text-red-500 hover:text-red-700 p-1">
+                                                            <X size={16} />
+                                                      </button>
                                                 </div>
                                           </div>
-                                    </div>
-                              ))}
+                                    ))
+                              )}
                         </div>
                   </div>
+
+                  {/* Modal */}
+                  {showModal && (
+                        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                              <div className={`w-full max-w-md p-6 rounded-lg ${darkMode ? "bg-gray-800" : "bg-white"}`}>
+                                    <h2 className="text-lg font-bold mb-4">Create New Task</h2>
+                                    <form onSubmit={handleSubmit} className="space-y-4">
+                                          <input
+                                                type="text"
+                                                placeholder="Task Title"
+                                                value={formData.title}
+                                                onChange={(e) => setFormData({...formData, title: e.target.value})}
+                                                className={`w-full p-2 border rounded ${darkMode ? "bg-gray-700 border-gray-600" : "bg-white border-gray-300"}`}
+                                                required
+                                          />
+                                          <textarea
+                                                placeholder="Description"
+                                                value={formData.description}
+                                                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                                                className={`w-full p-2 border rounded ${darkMode ? "bg-gray-700 border-gray-600" : "bg-white border-gray-300"}`}
+                                                rows={3}
+                                                required
+                                          />
+                                          <input
+                                                type="text"
+                                                placeholder="Assigned To"
+                                                value={formData.assignedTo}
+                                                onChange={(e) => setFormData({...formData, assignedTo: e.target.value})}
+                                                className={`w-full p-2 border rounded ${darkMode ? "bg-gray-700 border-gray-600" : "bg-white border-gray-300"}`}
+                                                required
+                                          />
+                                          <select
+                                                value={formData.priority}
+                                                onChange={(e) => setFormData({...formData, priority: e.target.value})}
+                                                className={`w-full p-2 border rounded ${darkMode ? "bg-gray-700 border-gray-600" : "bg-white border-gray-300"}`}
+                                          >
+                                                <option value="Low">Low</option>
+                                                <option value="Medium">Medium</option>
+                                                <option value="High">High</option>
+                                                <option value="Critical">Critical</option>
+                                          </select>
+                                          <input
+                                                type="date"
+                                                value={formData.dueDate}
+                                                onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
+                                                className={`w-full p-2 border rounded ${darkMode ? "bg-gray-700 border-gray-600" : "bg-white border-gray-300"}`}
+                                                required
+                                          />
+                                          <div className="flex gap-2">
+                                                <button type="submit" className="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                                                      Create Task
+                                                </button>
+                                                <button type="button" onClick={() => setShowModal(false)} className={`flex-1 py-2 rounded ${darkMode ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-200 hover:bg-gray-300"}`}>
+                                                      Cancel
+                                                </button>
+                                          </div>
+                                    </form>
+                              </div>
+                        </div>
+                  )}
             </div>
       );
 }

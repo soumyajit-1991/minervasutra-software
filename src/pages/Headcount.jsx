@@ -12,11 +12,39 @@ import {
       Cell,
 } from "recharts";
 import { Users, Briefcase, TrendingUp, UserMinus, UserPlus } from "lucide-react";
-import { headcountData } from "../data/headcountData";
+import { useEmployees } from "../context/EmployeeContext";
 
 export default function Headcount() {
       const { darkMode } = useOutletContext();
-      const { metrics, departmentDist, trends, recentActivity } = headcountData;
+      const { employees, loading } = useEmployees();
+      
+      // Calculate metrics from real employee data
+      const metrics = {
+            totalEmployees: employees.length,
+            activeEmployees: employees.length,
+            attritionRate: 0,
+            hiringRate: 0
+      };
+      
+      // Calculate department distribution
+      const departmentDist = employees.reduce((acc, emp) => {
+            const dept = emp.department || 'Unknown';
+            const existing = acc.find(d => d.name === dept);
+            if (existing) {
+                  existing.count++;
+            } else {
+                  acc.push({ name: dept, count: 1, color: getRandomColor() });
+            }
+            return acc;
+      }, []);
+      
+      const trends = [];
+      const recentActivity = [];
+      
+      function getRandomColor() {
+            const colors = ['#3b82f6', '#22c55e', '#ef4444', '#f59e0b', '#8b5cf6', '#06b6d4'];
+            return colors[Math.floor(Math.random() * colors.length)];
+      }
 
       const cardClass = `p-6 rounded-xl shadow-md transition-colors duration-300 ${darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900"
             }`;
@@ -61,53 +89,45 @@ export default function Headcount() {
                         {/* Department Distribution */}
                         <div className={cardClass}>
                               <h2 className="text-lg font-semibold mb-4">Department Distribution</h2>
-                              <ResponsiveContainer width="100%" height={300}>
-                                    <PieChart>
-                                          <Pie
-                                                data={departmentDist}
-                                                cx="50%"
-                                                cy="50%"
-                                                innerRadius={60}
-                                                outerRadius={100}
-                                                paddingAngle={5}
-                                                dataKey="count"
-                                          >
-                                                {departmentDist.map((entry, index) => (
-                                                      <Cell key={`cell-${index}`} fill={entry.color} />
-                                                ))}
-                                          </Pie>
-                                          <Tooltip
-                                                contentStyle={{
-                                                      backgroundColor: darkMode ? "#1f2937" : "#fff",
-                                                      borderColor: darkMode ? "#374151" : "#e5e7eb",
-                                                      color: darkMode ? "#fff" : "#000",
-                                                }}
-                                          />
-                                          <Legend />
-                                    </PieChart>
-                              </ResponsiveContainer>
+                              {departmentDist.length > 0 ? (
+                                    <ResponsiveContainer width="100%" height={300}>
+                                          <PieChart>
+                                                <Pie
+                                                      data={departmentDist}
+                                                      cx="50%"
+                                                      cy="50%"
+                                                      innerRadius={60}
+                                                      outerRadius={100}
+                                                      paddingAngle={5}
+                                                      dataKey="count"
+                                                >
+                                                      {departmentDist.map((entry, index) => (
+                                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                                      ))}
+                                                </Pie>
+                                                <Tooltip
+                                                      contentStyle={{
+                                                            backgroundColor: darkMode ? "#1f2937" : "#fff",
+                                                            borderColor: darkMode ? "#374151" : "#e5e7eb",
+                                                            color: darkMode ? "#fff" : "#000",
+                                                      }}
+                                                />
+                                                <Legend />
+                                          </PieChart>
+                                    </ResponsiveContainer>
+                              ) : (
+                                    <div className="flex items-center justify-center h-[300px]">
+                                          <p className={`text-lg ${darkMode ? "text-gray-400" : "text-gray-600"}`}>No department data available</p>
+                                    </div>
+                              )}
                         </div>
 
                         {/* Headcount Trends */}
                         <div className={cardClass}>
                               <h2 className="text-lg font-semibold mb-4">Headcount Trends (2024)</h2>
-                              <ResponsiveContainer width="100%" height={300}>
-                                    <BarChart data={trends}>
-                                          <XAxis dataKey="month" stroke={darkMode ? "#9ca3af" : "#4b5563"} />
-                                          <YAxis stroke={darkMode ? "#9ca3af" : "#4b5563"} />
-                                          <Tooltip
-                                                contentStyle={{
-                                                      backgroundColor: darkMode ? "#1f2937" : "#fff",
-                                                      borderColor: darkMode ? "#374151" : "#e5e7eb",
-                                                      color: darkMode ? "#fff" : "#000",
-                                                }}
-                                          />
-                                          <Legend />
-                                          <Bar dataKey="headcount" fill="#3b82f6" name="Total Headcount" />
-                                          <Bar dataKey="hired" fill="#22c55e" name="Hired" />
-                                          <Bar dataKey="left" fill="#ef4444" name="Left" />
-                                    </BarChart>
-                              </ResponsiveContainer>
+                              <div className="flex items-center justify-center h-[300px]">
+                                    <p className={`text-lg ${darkMode ? "text-gray-400" : "text-gray-600"}`}>No trend data available</p>
+                              </div>
                         </div>
                   </div>
 
@@ -115,46 +135,11 @@ export default function Headcount() {
                   <div className={cardClass}>
                         <div className="flex justify-between items-center mb-4">
                               <h2 className="text-lg font-semibold">Recent Activity</h2>
-                              <button className="text-blue-500 hover:underline text-sm">View All</button>
                         </div>
-                        <div className="overflow-x-auto">
-                              <table className="w-full text-left">
-                                    <thead>
-                                          <tr className={`border-b ${darkMode ? "border-gray-700" : "border-gray-200"}`}>
-                                                <th className="py-2">Name</th>
-                                                <th className="py-2">Role</th>
-                                                <th className="py-2">Department</th>
-                                                <th className="py-2">Date</th>
-                                                <th className="py-2">Action</th>
-                                          </tr>
-                                    </thead>
-                                    <tbody>
-                                          {recentActivity.map((item) => (
-                                                <tr
-                                                      key={item.id}
-                                                      className={`border-b last:border-0 ${darkMode ? "border-gray-700 hover:bg-gray-700" : "border-gray-100 hover:bg-gray-50"
-                                                            }`}
-                                                >
-                                                      <td className="py-3">{item.name}</td>
-                                                      <td className="py-3">{item.role}</td>
-                                                      <td className="py-3">{item.department}</td>
-                                                      <td className="py-3">{item.date}</td>
-                                                      <td className="py-3">
-                                                            <span
-                                                                  className={`px-2 py-1 rounded-full text-xs font-medium ${item.status === "success"
-                                                                              ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                                                                              : item.status === "error"
-                                                                                    ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                                                                                    : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                                                                        }`}
-                                                            >
-                                                                  {item.action}
-                                                            </span>
-                                                      </td>
-                                                </tr>
-                                          ))}
-                                    </tbody>
-                              </table>
+                        <div className="text-center py-8">
+                              <Users size={48} className={`mx-auto mb-4 ${darkMode ? "text-gray-700" : "text-gray-300"}`} />
+                              <p className="text-lg font-medium">No recent activity</p>
+                              <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>Employee activities will appear here</p>
                         </div>
                   </div>
             </div>
