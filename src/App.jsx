@@ -231,6 +231,17 @@ import EditOffer from "./addform/EditOffer";
 import AddNegotiation from "./addform/AddNegotiation";
  import EmployeeDetails from "./pages/employeeDetails.jsx";
  import EditJob from "./pages/Editjob.jsx";
+import AddEvent from "./addform/addEvent.jsx";
+ import EmployeeDashboard from "./pages/employee/EmployeeDashboard.jsx";
+ import EmployeeLayout from "./pages/layouts/EmployeeLayouts.jsx";
+ import EmployeeProfile from "./pages/employee/EmployeeProfile.jsx";
+ import AddEmployeeDetails from "./addform/addEmployeeDetails.jsx";
+import AdminPanel from "./pages/admin/adminPanel.jsx";
+import AdminPayments from "./pages/admin/adminPayment.jsx";
+import AdminSupport from "./pages/admin/adminSupport.jsx";
+//  import AddEmployeeDetails from "./AddEmployeeDetails";
+
+
 
 function App() {
   return (
@@ -239,12 +250,25 @@ function App() {
       <EmployeeProvider>
         <Routes>
           {/* Public */}
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Login />} />
+
+          {/* Employee Portal - Outside main layout */}
+          <Route path="/employee-portal/:email" element={<ProtectedRoute><EmployeeProfile/></ProtectedRoute >} />
+          <Route path="/employee-profile/add" element={<ProtectedRoute><AddEmployeeDetails /></ProtectedRoute>} />
+           
+          <Route path="/employee-profile/edit" element={<ProtectedRoute><AddEmployeeDetails /></ProtectedRoute>} />
+
+
+          {/* For admin panel */}
+          <Route path="/admin-route" element={<AdminPanel/>} />
+          <Route path="/admin-payment" element={<AdminPayments/>} />
+          <Route path="/admin-support" element={<AdminSupport/>}/>
+      
 
           {/* Protected Layout */}
           <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             {/* Dashboard */}
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
             {/* Employee */}
             <Route path="/employee-directory" element={<EmployeeDirectory />} />
@@ -252,7 +276,9 @@ function App() {
             <Route path="/add-employee" element={<AddEmployee />} />
             <Route path="/add-new-employee" element={<AddNewEmployee />} />
             <Route path="/employee-profiles" element={<EmployeeProfiles />} />
-             <Route path="/status" element={<Status />} />
+            <Route path="/status" element={<Status />} />
+            <Route path="/add-event" element={<AddEvent />} />
+
 
             {/* HR */}
             <Route path="/headcount" element={<Headcount />} />
@@ -334,6 +360,7 @@ function App() {
             <Route path="/edit-offer/:id" element={<EditOffer />} />
             <Route path="/add-negotiation" element={<AddNegotiation />} />
           </Route>
+
         </Routes>
       </EmployeeProvider>
     </BrowserRouter>

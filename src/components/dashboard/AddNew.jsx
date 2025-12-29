@@ -17,7 +17,7 @@ export default function AddNew({ darkMode }) {
   };
 
   const handleAddWorkflow = () => {
-    navigate("/workflow");
+    navigate("/add-event");
   };
 
   // Define the new button classes
@@ -59,7 +59,7 @@ export default function AddNew({ darkMode }) {
         className={`flex items-center gap-2 px-4 py-4 rounded-lg transition ${buttonClass}`}
       >
         <Plus size={18} />
-        View Workflow
+        Add Event
       </button>
     </div>
   );

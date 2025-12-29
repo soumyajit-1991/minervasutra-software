@@ -33,6 +33,7 @@ import {
     ShieldCheck,
     Bot,
 } from "lucide-react";
+import logo from '../assets/Screenshot 2025-12-29 220722.png'
 
 const Sidebar = ({ darkMode }) => {
     const location = useLocation();
@@ -62,11 +63,18 @@ const Sidebar = ({ darkMode }) => {
             }`}
         >
             {/* Brand Header with Gradient Text */}
-            <div className="px-6 py-6">
+            {/* <div className="px-6 py-6">
                 <h1 className="font-extrabold text-2xl tracking-tight bg-gradient-to-r from-fuchsia-700 to-cyan-400 bg-clip-text text-transparent">
                    Minervasutra
                 </h1>
-            </div>
+            </div> */}
+            <div className="flex justify-center mb-6 bg-transparent">
+                        <img
+                          src={logo}
+                          alt="Company Logo"
+                          className="h-16 object-contain bg-transparent"
+                        />
+                      </div>
 
             {/* Styled scrollbar container */}
             <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent dark:scrollbar-thumb-gray-700 hover:scrollbar-thumb-fuchsia-700/50">

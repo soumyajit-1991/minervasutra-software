@@ -25,6 +25,11 @@ const doctorRoutes = require('./routes/doctorRoutes');
 const customerOrderRoutes = require('./routes/customerOrderRoutes');
 const supplierOrderRoutes = require('./routes/supplierOrderRoutes');
 const ptoRoutes = require('./routes/pto');
+const authRoutes = require("./routes/authRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
+
+
+
 // const expenseRoutes = require("./routes/expenseRoutes");
 // const payrollRoutes = require("./routes/payrollRoutes");
 
@@ -157,6 +162,23 @@ app.use("/api/performance", require("./routes/performanceRoutes"));
 app.use("/api/payroll", payrollRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/negotiations", negotiationRoutes);
+app.use("/api/events", require("./routes/eventRoutes"));
+app.use("/api/auth", authRoutes);
+app.use(
+  "/api/employee-profile",
+  require("./routes/employeeProfileRoutes")
+);
+app.use("/api/tasks", require("./routes/taskRoutes"));
+
+app.use("/api/payments", paymentRoutes);
+app.use("/api/clients", require("./routes/clientRoutes"));
+app.use("/api/feedback", require("./routes/feedbackRoutes"));
+app.use("/api/feedback", require("./routes/feedbackRoutesforclient"));
+
+
+
+
+
 
 
 // Dashboard stats endpoint

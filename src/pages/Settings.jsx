@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { Navigate, useOutletContext ,useNavigate} from "react-router-dom";
 import { LogOut } from "lucide-react";
 
 export default function Settings() {
@@ -11,7 +11,7 @@ export default function Settings() {
     doctorClinicAvailable: false,
     gstRate: 18, // Default GST rate in percentage
   });
-
+  const navigate = useNavigate();
   const handleToggle = (field) => {
     setSettings((prev) => ({
       ...prev,
@@ -79,6 +79,7 @@ export default function Settings() {
 
   const handleLogout = () => {
     alert("Logging out...");
+    navigate("/");
     // Add actual logout logic here (e.g., clear auth token, redirect to login)
   };
 
