@@ -167,7 +167,7 @@ function Clients() {
   });
 
   const fetchClients = async () => {
-    const res = await axios.get("http://localhost:5000/api/clients");
+    const res = await axios.get("https://hr-management-backend-sable.vercel.app/api/clients");
     setClients(res.data);
   };
 
@@ -181,7 +181,7 @@ function Clients() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.post("http://localhost:5000/api/clients", {
+    await axios.post("https://hr-management-backend-sable.vercel.app/api/clients", {
       ...formData,
       days: Number(formData.days)
     });

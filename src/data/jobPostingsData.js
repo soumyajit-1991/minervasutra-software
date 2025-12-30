@@ -108,7 +108,7 @@ export const jobPostingsData = {
                   applicants: 21,
                   salary: "$70,000 - $90,000",
                   experience: "5+ years",
-                  description: "Manage and maintain pharmacy management systems and IT infrastructure",
+                  description: "Manage and maintain MINERVASUTRAs and IT infrastructure",
                   priority: "High"
             },
             {

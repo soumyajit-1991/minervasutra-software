@@ -27,7 +27,7 @@ export default function AddEmployeeDetails() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/employee-profile/save",
+        "https://hr-management-backend-sable.vercel.app/api/employee-profile/save",
         {
           email: user.email,
           personalInfo: {
@@ -58,7 +58,7 @@ export default function AddEmployeeDetails() {
   const fetchExistingData = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/employee-profile/${user.email}`
+        `https://hr-management-backend-sable.vercel.app/api/employee-profile/${user.email}`
       );
 
       const data = res.data;

@@ -21,7 +21,7 @@
 //       <div className="max-w-md w-full space-y-8">
 //         <div>
 //           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-//             Pharmacy Management System
+//             MINERVASUTRA
 //           </h2>
 //           <p className="mt-2 text-center text-sm text-gray-600">
 //             Username: admin | Password: admin123
@@ -78,7 +78,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "https://hr-management-backend-sable.vercel.app/api/auth/login",
         credentials
       );
 
@@ -111,7 +111,7 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8">
         <h2 className="text-center text-3xl font-bold">
-          Pharmacy Management System
+          MINERVASUTRA
         </h2>
 
         {error && <p className="text-red-500 text-center">{error}</p>}

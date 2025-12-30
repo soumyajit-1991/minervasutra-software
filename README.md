@@ -1,6 +1,6 @@
-# Pharmacy Management System
+# MINERVASUTRA
 
-A comprehensive full-stack pharmacy management system built with React (frontend) and Node.js/Express (backend) with MongoDB database.
+A comprehensive full-stack MINERVASUTRA built with React (frontend) and Node.js/Express (backend) with MongoDB database.
 
 ## Features
 
@@ -57,7 +57,7 @@ cd ..
 
 #### Frontend Environment (.env)
 ```env
-VITE_API_URL=https://hr-management-r1zn.onrender.com
+VITE_API_URL=https://hr-management-backend-sable.vercel.app
 ```
 
 #### Backend Environment (server/.env)
@@ -106,8 +106,8 @@ npm run dev
 ## Application URLs
 
 - **Frontend**: http://localhost:5173
-- **Backend API**: https://hr-management-r1zn.onrender.com
-- **API Health Check**: https://hr-management-r1zn.onrender.com/api/health
+- **Backend API**: https://hr-management-backend-sable.vercel.app
+- **API Health Check**: https://hr-management-backend-sable.vercel.app/api/health
 
 ## API Endpoints
 

@@ -123,7 +123,7 @@ export const EmployeeProvider = ({ children }) => {
   const fetchEmployees = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await axios.get("https://hr-management-r1zn.onrender.com/api/employees");
+      const res = await axios.get("https://hr-management-backend-sable.vercel.app/api/employees");
       setEmployees(res.data);
       
       // Set the first employee as current user (you can modify this logic)
@@ -146,7 +146,7 @@ export const EmployeeProvider = ({ children }) => {
   const addEmployee = async (employeeData) => {
     try {
       const res = await axios.post(
-        "https://hr-management-r1zn.onrender.com/api/employees",
+        "https://hr-management-backend-sable.vercel.app/api/employees",
         employeeData
       );
 

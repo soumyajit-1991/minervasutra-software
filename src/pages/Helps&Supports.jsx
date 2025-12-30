@@ -13,7 +13,7 @@
 //       <div>
 //         <h2 className="text-2xl font-bold">Help & Support</h2>
 //         <p className={darkMode ? "text-gray-400" : "text-gray-600"}>
-//           Get assistance with your pharmacy management system.
+//           Get assistance with your MINERVASUTRA.
 //         </p>
 //       </div>
 
@@ -103,7 +103,7 @@ export default function HelpSupport() {
     try {
       setLoading(true);
 
-      await axios.post("http://localhost:5000/api/feedback", {
+      await axios.post("https://hr-management-backend-sable.vercel.app/api/feedback", {
         message,
         email: "hr@pharmecy.com",
         role: "hr"
@@ -127,7 +127,7 @@ export default function HelpSupport() {
       <div>
         <h2 className="text-2xl font-bold">Help & Support</h2>
         <p className={darkMode ? "text-gray-400" : "text-gray-600"}>
-          Get assistance with your pharmacy management system.
+          Get assistance with your MINERVASUTRA.
         </p>
       </div>
 

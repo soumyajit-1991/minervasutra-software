@@ -180,7 +180,7 @@ export default function TimeSheet() {
 
 const handleSave = async () => {
   try {
-    await fetch("https://hr-management-r1zn.onrender.com/api/timesheets", {
+    await fetch("https://hr-management-backend-sable.vercel.app/api/timesheets", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -220,7 +220,7 @@ const handleSave = async () => {
 
 const fetchData = async () => {
       try{
-            const res=await axios.get("https://hr-management-r1zn.onrender.com/api/timesheets");
+            const res=await axios.get("https://hr-management-backend-sable.vercel.app/api/timesheets");
             console.log(res.data);
             setList(res.data);
       }

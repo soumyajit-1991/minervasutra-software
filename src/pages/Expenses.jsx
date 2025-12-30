@@ -2,7 +2,7 @@
 // import { useOutletContext, useNavigate } from "react-router-dom";
 // import axios from "axios";
 
-// const API = "https://hr-management-r1zn.onrender.com/api/expenses"
+// const API = "https://hr-management-backend-sable.vercel.app/api/expenses"
 
 
    
@@ -473,8 +473,8 @@ import {
   Trash2,
 } from "lucide-react";
 
-const API = "https://hr-management-r1zn.onrender.com/api/expenses";
-// const API="https://hr-management-r1zn.onrender.com/api/expenses"
+const API = "https://hr-management-backend-sable.vercel.app/api/expenses";
+// const API="https://hr-management-backend-sable.vercel.app/api/expenses"
 
 export default function Expenses() {
   const { darkMode } = useOutletContext();

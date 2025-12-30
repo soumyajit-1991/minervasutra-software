@@ -16,7 +16,7 @@ const getApiBaseUrl = () => {
   }
   
   // Development fallback
-  return envUrl || "https://hr-management-r1zn.onrender.com";
+  return envUrl || "https://hr-management-backend-sable.vercel.app";
 };
 
 export const API_BASE_URL = getApiBaseUrl();

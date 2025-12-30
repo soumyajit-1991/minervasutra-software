@@ -148,7 +148,7 @@ export default function Vacancy() {
     const fetchVacancies = async () => {
       try {
         const res = await axios.get(
-          "https://hr-management-r1zn.onrender.com/api/job-postings"
+          "https://hr-management-backend-sable.vercel.app/api/job-postings"
         );
 
         // Only show non-expired jobs

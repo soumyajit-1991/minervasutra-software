@@ -24,7 +24,7 @@ export default function EditJob() {
 
     try {
       await axios.put(
-        `https://hr-management-r1zn.onrender.com/api/job-postings/${formData._id}`,
+        `https://hr-management-backend-sable.vercel.app/api/job-postings/${formData._id}`,
         formData
       );
       navigate("/vacancy"); // back to vacancy list

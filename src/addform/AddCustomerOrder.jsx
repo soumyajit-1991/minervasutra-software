@@ -191,7 +191,7 @@ export default function AddNewCustomer() {
 
   try {
     const res = await axios.post(
-      "https://hr-management-r1zn.onrender.com/api/customer-orders",
+      "https://hr-management-backend-sable.vercel.app/api/customer-orders",
       payload
     );
     

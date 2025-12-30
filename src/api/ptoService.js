@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://hr-management-r1zn.onrender.com';
+const API_URL = import.meta.env.VITE_API_URL || 'https://hr-management-backend-sable.vercel.app';
 
 export const fetchPTORequests = async () => {
   try {

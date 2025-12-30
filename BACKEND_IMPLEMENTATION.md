@@ -198,13 +198,13 @@ npm start
 ### 5. Test API
 ```bash
 # Health check
-curl https://hr-management-r1zn.onrender.com/api/health
+curl https://hr-management-backend-sable.vercel.app/api/health
 
 # Get all employees
-curl https://hr-management-r1zn.onrender.com/api/employees
+curl https://hr-management-backend-sable.vercel.app/api/employees
 
 # Get dashboard stats
-curl https://hr-management-r1zn.onrender.com/api/dashboard/stats
+curl https://hr-management-backend-sable.vercel.app/api/dashboard/stats
 ```
 
 ## Integration with Frontend

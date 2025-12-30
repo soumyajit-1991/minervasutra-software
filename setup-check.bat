@@ -1,5 +1,5 @@
 @echo off
-echo Pharmacy Management System - Setup Verification
+echo MINERVASUTRA - Setup Verification
 echo ================================================
 echo.
 

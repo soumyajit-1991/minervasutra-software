@@ -14,7 +14,7 @@ export default api;
 
 // // ✅ Create an Axios instance with default settings
 // const api = axios.create({
-//   baseURL: "https://hr-management-r1zn.onrender.com/api", // change this if backend is deployed
+//   baseURL: "https://hr-management-backend-sable.vercel.app/api", // change this if backend is deployed
 //   headers: {
 //     "Content-Type": "application/json",
 //   },
