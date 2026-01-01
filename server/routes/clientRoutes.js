@@ -1,8 +1,32 @@
+// const express = require("express");
+// const router = express.Router();
+// const Client = require("../models/client");
+
+// // CREATE CLIENT
+// router.post("/", async (req, res) => {
+//   try {
+//     const client = await Client.create(req.body);
+//     res.status(201).json(client);
+//   } catch (err) {
+//     res.status(400).json({ message: err.message });
+//   }
+// });
+
+// // GET ALL CLIENTS
+// router.get("/", async (req, res) => {
+//   const clients = await Client.find().sort({ createdAt: -1 });
+//   res.json(clients);
+// });
+
+// module.exports = router;
+
+
+
 const express = require("express");
 const router = express.Router();
 const Client = require("../models/client");
 
-// CREATE CLIENT
+/* ===================== CREATE CLIENT ===================== */
 router.post("/", async (req, res) => {
   try {
     const client = await Client.create(req.body);
@@ -12,10 +36,48 @@ router.post("/", async (req, res) => {
   }
 });
 
-// GET ALL CLIENTS
+/* ===================== GET ALL CLIENTS ===================== */
 router.get("/", async (req, res) => {
-  const clients = await Client.find().sort({ createdAt: -1 });
-  res.json(clients);
+  try {
+    const clients = await Client.find().sort({ createdAt: -1 });
+    res.json(clients);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+/* ===================== UPDATE CLIENT ===================== */
+router.put("/:id", async (req, res) => {
+  try {
+    const updatedClient = await Client.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedClient) {
+      return res.status(404).json({ message: "Client not found" });
+    }
+
+    res.json(updatedClient);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+/* ===================== DELETE CLIENT ===================== */
+router.delete("/:id", async (req, res) => {
+  try {
+    const deletedClient = await Client.findByIdAndDelete(req.params.id);
+
+    if (!deletedClient) {
+      return res.status(404).json({ message: "Client not found" });
+    }
+
+    res.json({ message: "Client deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 module.exports = router;

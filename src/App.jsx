@@ -260,9 +260,9 @@ function App() {
 
 
           {/* For admin panel */}
-          <Route path="/admin-route" element={<AdminPanel/>} />
-          <Route path="/admin-payment" element={<AdminPayments/>} />
-          <Route path="/admin-support" element={<AdminSupport/>}/>
+          <Route path="/admin-route" element={<ProtectedRoute><AdminPanel/></ProtectedRoute>} />
+          <Route path="/admin-payment" element={<ProtectedRoute><AdminPayments/></ProtectedRoute>} />
+          <Route path="/admin-support" element={<ProtectedRoute><AdminSupport/></ProtectedRoute>}/>
       
 
           {/* Protected Layout */}
@@ -271,94 +271,94 @@ function App() {
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
             {/* Employee */}
-            <Route path="/employee-directory" element={<EmployeeDirectory />} />
-            <Route path="/employee" element={<Employee />} />
-            <Route path="/add-employee" element={<AddEmployee />} />
-            <Route path="/add-new-employee" element={<AddNewEmployee />} />
-            <Route path="/employee-profiles" element={<EmployeeProfiles />} />
-            <Route path="/status" element={<Status />} />
-            <Route path="/add-event" element={<AddEvent />} />
+            <Route path="/employee-directory" element={<ProtectedRoute><EmployeeDirectory /> </ProtectedRoute>} />
+            <Route path="/employee" element={<ProtectedRoute><Employee /></ProtectedRoute>} />
+            <Route path="/add-employee" element={<ProtectedRoute><AddEmployee /></ProtectedRoute>} />
+            <Route path="/add-new-employee" element={<ProtectedRoute><AddNewEmployee /></ProtectedRoute>} />
+            <Route path="/employee-profiles" element={<ProtectedRoute><EmployeeProfiles /></ProtectedRoute>} />
+            <Route path="/status" element={<ProtectedRoute><Status /></ProtectedRoute>} />
+            <Route path="/add-event" element={<ProtectedRoute><AddEvent /></ProtectedRoute>} />
 
 
             {/* HR */}
-            <Route path="/headcount" element={<Headcount />} />
-            <Route path="/attendance" element={<Attendance />} />
-            <Route path="/vacancypage" element={<Vacancy />} />
-            <Route path="/edit-job" element={<EditJob />} />
+            <Route path="/headcount" element={<ProtectedRoute><Headcount /></ProtectedRoute>} />
+            <Route path="/attendance" element={<ProtectedRoute><Attendance /></ProtectedRoute>} />
+            <Route path="/vacancypage" element={<ProtectedRoute><Vacancy /></ProtectedRoute>} />
+            <Route path="/edit-job" element={<ProtectedRoute><EditJob /></ProtectedRoute>} />
 
-            <Route path="/performance" element={<Performance />} />
-            <Route path="/payroll" element={<Payroll />} />
-            <Route path="/team-hierarchy" element={<TeamHierarchy />} />
+            <Route path="/performance" element={<ProtectedRoute><Performance /></ProtectedRoute>} />
+            <Route path="/payroll" element={<ProtectedRoute><Payroll /></ProtectedRoute>} />
+            <Route path="/team-hierarchy" element={<ProtectedRoute><TeamHierarchy /></ProtectedRoute>} />
 
 
             {/* Work */}
-            <Route path="/workflow" element={<Workflow />} />
-            <Route path="/task-management" element={<TaskManagement />} />
-            <Route path="/event-tracker" element={<MeetingTracker />} />
-            <Route path="/ai-assistant" element={<AiAssistant />} />
+            <Route path="/workflow" element={<ProtectedRoute><Workflow /></ProtectedRoute>} />
+            <Route path="/task-management" element={<ProtectedRoute><TaskManagement /></ProtectedRoute>} />
+            <Route path="/event-tracker" element={<ProtectedRoute><MeetingTracker /></ProtectedRoute>} />
+            <Route path="/ai-assistant" element={<ProtectedRoute><AiAssistant /></ProtectedRoute>} />
 
             {/* Recruitment */}
-            <Route path="/job-postings" element={<JobPostings />} />
-            <Route path="/candidate-pipeline" element={<CandidatePipeline />} />
-            <Route path="/interview-scheduling" element={<InterviewScheduling />} />
-            <Route path="/offer-management" element={<OfferManagement />} />
+            <Route path="/job-postings" element={<ProtectedRoute><JobPostings /></ProtectedRoute>} />
+            <Route path="/candidate-pipeline" element={<ProtectedRoute><CandidatePipeline /></ProtectedRoute>} />
+            <Route path="/interview-scheduling" element={<ProtectedRoute><InterviewScheduling /></ProtectedRoute>} />
+            <Route path="/offer-management" element={<ProtectedRoute><OfferManagement /></ProtectedRoute>} />
             {/* <Route path="/negotiation-notes" element={<NegotiationNotes />} /> */}
-            <Route path="/negotiation-notes" element={<NegotiationNotes />} />
-            <Route path="/add-negotiation" element={<AddNegotiation />} />
+            <Route path="/negotiation-notes" element={<ProtectedRoute><NegotiationNotes /></ProtectedRoute>} />
+            <Route path="/add-negotiation" element={<ProtectedRoute><AddNegotiation /></ProtectedRoute>} />
 
 
             {/* Time */}
-            <Route path="/time-sheet" element={<TimeSheet />} />
-            <Route path="/pto-list" element={<PTOList />} />
+            <Route path="/time-sheet" element={<ProtectedRoute><TimeSheet /></ProtectedRoute>} />
+            <Route path="/pto-list" element={<ProtectedRoute><PTOList /></ProtectedRoute>} />
            
 
-<Route path="/employee/:id" element={<EmployeeDetails />} />
+<Route path="/employee/:id" element={<ProtectedRoute><EmployeeDetails /></ProtectedRoute>} />
 
-            <Route path="/overtime-list" element={<OvertimeList />} />
+            <Route path="/overtime-list" element={<ProtectedRoute><OvertimeList /></ProtectedRoute>} />
 
             {/* Learning */}
-            <Route path="/trainings" element={<Trainings />} />
-            <Route path="/skill-roadmap" element={<SkillRoadmap />} />
-            <Route path="/certifications" element={<Certifications />} />
-            <Route path="/progress" element={<Progress />} />
+            <Route path="/trainings" element={<ProtectedRoute><Trainings /></ProtectedRoute>} />
+            <Route path="/skill-roadmap" element={<ProtectedRoute><SkillRoadmap /></ProtectedRoute>} />
+            <Route path="/certifications" element={<ProtectedRoute><Certifications /></ProtectedRoute>} />
+            <Route path="/progress" element={<ProtectedRoute><Progress /></ProtectedRoute>} />
 
             {/* Business */}
-            <Route path="/compliance" element={<Compliance />} />
-            <Route path="/customer" element={<Customer />} />
-            <Route path="/suppliers" element={<Suppliers />} />
-            <Route path="/products" element={<Product />} />
-            <Route path="/doctor" element={<Doctor />} />
-            <Route path="/supplier-orders" element={<SupplierOrder />} />
-            <Route path="/customer-orders" element={<CustomerOrders />} />
-            <Route path="/expenses" element={<Expenses />} />
-            <Route path="/notes" element={<Notes />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/help-supports" element={<HelpSupport />} />
-            <Route path="/return-product" element={<ReturnProduct />} />
-            <Route path="/branch" element={<Branch />} />
+            <Route path="/compliance" element={<ProtectedRoute><Compliance /></ProtectedRoute>} />
+            <Route path="/customer" element={<ProtectedRoute><Customer /></ProtectedRoute>} />
+            <Route path="/suppliers" element={<ProtectedRoute><Suppliers /></ProtectedRoute>} />
+            <Route path="/products" element={<ProtectedRoute><Product /></ProtectedRoute>} />
+            <Route path="/doctor" element={<ProtectedRoute><Doctor /></ProtectedRoute>} />
+            <Route path="/supplier-orders" element={<ProtectedRoute><SupplierOrder /></ProtectedRoute>} />
+            <Route path="/customer-orders" element={<ProtectedRoute><CustomerOrders /></ProtectedRoute>} />
+            <Route path="/expenses" element={<ProtectedRoute><Expenses /></ProtectedRoute>} />
+            <Route path="/notes" element={<ProtectedRoute><Notes /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+            <Route path="/help-supports" element={<ProtectedRoute><HelpSupport /></ProtectedRoute>} />
+            <Route path="/return-product" element={<ProtectedRoute><ReturnProduct /></ProtectedRoute>} />
+            <Route path="/branch" element={<ProtectedRoute><Branch /></ProtectedRoute>} />
 
             {/* Add Forms */}
-            <Route path="/add-customer" element={<AddCustomer />} />
-            <Route path="/add-supplier" element={<AddSupplier />} />
-            <Route path="/add-product" element={<AddProduct />} />
-            <Route path="/add-doctor" element={<AddDoctor />} />
-            <Route path="/add-appointment" element={<AddAppointment />} />
-            <Route path="/add-supplier-order" element={<AddNewSupplierOrder />} />
-            <Route path="/add-customer-order" element={<AddCustomerOrder />} />
-            <Route path="/add-note" element={<AddNote />} />
-            <Route path="/add-expense" element={<AddExpense />} />
-            <Route path="/edit-expense/:id" element={<AddExpense />} />
-            <Route path="/add-return-product" element={<AddReturnProduct />} />
-            <Route path="/add-branch" element={<AddBranch />} />
-            <Route path="/add-compliance" element={<AddCompliance />} />
-            <Route path="/add-job-posting" element={<AddJobPosting />} />
-            <Route path="/add-candidate" element={<AddCandidate />} />
-            <Route path="/edit-candidate/:id" element={<EditCandidate />} />
-            <Route path="/add-interview" element={<AddInterview />} />
-            <Route path="/edit-interview/:id" element={<EditInterview />} />
-            <Route path="/add-offer" element={<AddOffer />} />
-            <Route path="/edit-offer/:id" element={<EditOffer />} />
-            <Route path="/add-negotiation" element={<AddNegotiation />} />
+            <Route path="/add-customer" element={<ProtectedRoute><AddCustomer /></ProtectedRoute>} />
+            <Route path="/add-supplier" element={<ProtectedRoute><AddSupplier /></ProtectedRoute>} />
+            <Route path="/add-product" element={<ProtectedRoute><AddProduct /></ProtectedRoute>} />
+            <Route path="/add-doctor" element={<ProtectedRoute><AddDoctor /></ProtectedRoute>} />
+            <Route path="/add-appointment" element={<ProtectedRoute><AddAppointment /></ProtectedRoute>} />
+            <Route path="/add-supplier-order" element={<ProtectedRoute><AddNewSupplierOrder /></ProtectedRoute>} />
+            <Route path="/add-customer-order" element={<ProtectedRoute><AddCustomerOrder /></ProtectedRoute>} />
+            <Route path="/add-note" element={<ProtectedRoute><AddNote /></ProtectedRoute>} />
+            <Route path="/add-expense" element={<ProtectedRoute><AddExpense /></ProtectedRoute>} />
+            <Route path="/edit-expense/:id" element={<ProtectedRoute><AddExpense /></ProtectedRoute>} />
+            <Route path="/add-return-product" element={<ProtectedRoute><AddReturnProduct /></ProtectedRoute>} />
+            <Route path="/add-branch" element={<ProtectedRoute><AddBranch /></ProtectedRoute>} />
+            <Route path="/add-compliance" element={<ProtectedRoute><AddCompliance /></ProtectedRoute>} />
+            <Route path="/add-job-posting" element={<ProtectedRoute><AddJobPosting /></ProtectedRoute>} />
+            <Route path="/add-candidate" element={<ProtectedRoute><AddCandidate /></ProtectedRoute>} />
+            <Route path="/edit-candidate/:id" element={<ProtectedRoute><EditCandidate /></ProtectedRoute>} />
+            <Route path="/add-interview" element={<ProtectedRoute><AddInterview /></ProtectedRoute>} />
+            <Route path="/edit-interview/:id" element={<ProtectedRoute><EditInterview /></ProtectedRoute>} />
+            <Route path="/add-offer" element={<ProtectedRoute><AddOffer /></ProtectedRoute>} />
+            <Route path="/edit-offer/:id" element={<ProtectedRoute><EditOffer /></ProtectedRoute>} />
+            <Route path="/add-negotiation" element={<ProtectedRoute><AddNegotiation /></ProtectedRoute>} />
           </Route>
 
         </Routes>

@@ -109,73 +109,83 @@
 
 
 
-
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
-const EmployeeContext = createContext();
+const EmployeeContext = createContext(null);
 
-export const EmployeeProvider = ({ children }) => {
+export function EmployeeProvider({ children }) {
   const [employees, setEmployees] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [currentEmployee, setCurrentEmployee] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const fetchEmployees = useCallback(async () => {
+  const API = "http://localhost:5000/api/employees";
+
+  /* ===================== FETCH EMPLOYEES ===================== */
+  const fetchEmployees = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("https://hr-management-backend-sable.vercel.app/api/employees");
+      const res = await axios.get(API);
       setEmployees(res.data);
-      
-      // Set the first employee as current user (you can modify this logic)
-      if (res.data.length > 0) {
-        setCurrentEmployee(prev => prev || res.data[0]);
-      }
-    } catch (error) {
-      console.error('Failed to fetch employees:', error);
+      setError(null);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to fetch employees");
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
-  // Fetch all employees on mount
   useEffect(() => {
     fetchEmployees();
-  }, [fetchEmployees]);
+  }, []);
 
-  // 🔥 This function is used in AddEmployee.jsx
-  const addEmployee = async (employeeData) => {
+  /* ===================== DELETE EMPLOYEE ===================== */
+  const deleteEmployee = async (id) => {
     try {
-      const res = await axios.post(
-        "https://hr-management-backend-sable.vercel.app/api/employees",
-        employeeData
-      );
+      await axios.delete(`${API}/${id}`);
+      setEmployees((prev) => prev.filter((emp) => emp._id !== id));
+    } catch (err) {
+      console.error("Delete employee failed", err);
+      throw err;
+    }
+  };
 
-      setEmployees((prev) => [res.data, ...prev]);
-      
-      // If no current employee is set, set the newly created one
-      if (!currentEmployee) {
-        setCurrentEmployee(res.data);
-      }
-      
-      return res.data;
-    } catch (error) {
-      console.error('Failed to create employee:', error.response?.data || error);
-      throw error;
+  /* ===================== UPDATE EMPLOYEE ===================== */
+  const updateEmployee = async (id, data) => {
+    try {
+      const res = await axios.put(`${API}/${id}`, data);
+      setEmployees((prev) =>
+        prev.map((emp) => (emp._id === id ? res.data : emp))
+      );
+    } catch (err) {
+      console.error("Update employee failed", err);
+      const errorMsg = err.response?.data?.error || err.message;
+      console.error("Error details:", errorMsg);
+      throw new Error(errorMsg);
     }
   };
 
   return (
-    <EmployeeContext.Provider value={{ 
-      employees, 
-      loading, 
-      currentEmployee, 
-      addEmployee, 
-      fetchEmployees,
-      setCurrentEmployee 
-    }}>
+    <EmployeeContext.Provider
+      value={{
+        employees,
+        loading,
+        error,
+        fetchEmployees,
+        deleteEmployee, // ✅ REQUIRED
+        updateEmployee, // ✅ REQUIRED
+      }}
+    >
       {children}
     </EmployeeContext.Provider>
   );
-};
+}
 
-export const useEmployees = () => useContext(EmployeeContext);
+export const useEmployees = () => {
+  const ctx = useContext(EmployeeContext);
+  if (!ctx) {
+    throw new Error("useEmployees must be used inside EmployeeProvider");
+  }
+  return ctx;
+};

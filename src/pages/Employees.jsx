@@ -143,19 +143,35 @@ export default function EmployeePage() {
     setPanelOpen(true);
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this employee?")) {
-      deleteEmployee(id);
-    }
-  };
+ const handleDelete = (id) => {
+  if (window.confirm("Are you sure you want to delete this employee?")) {
+    deleteEmployee(id);
+  }
+};
 
-  const handleSaveEdit = (e) => {
-    e.preventDefault();
-    if (selected && editable) {
-      updateEmployee(selected._id, editable);
+const handleSaveEdit = async (e) => {
+  e.preventDefault();
+  if (selected && editable) {
+    try {
+      // Only send fields that should be updated
+      const updateData = {
+        name: editable.name,
+        phone: editable.phone,
+        email: editable.email,
+        department: editable.department,
+        location: editable.location,
+        role: editable.role,
+        salary: editable.salary
+      };
+      await updateEmployee(selected._id, updateData);
       setPanelOpen(false);
+    } catch (error) {
+      console.error("Failed to update employee:", error);
+      alert(`Failed to update employee: ${error.message}`);
     }
-  };
+  }
+};
+
 
   const exportCsv = () => {
     const rows = filteredEmployees.map((emp) => ({
@@ -310,7 +326,7 @@ export default function EmployeePage() {
               ) : (
                 filteredEmployees.map((emp) => (
                   <tr
-                    key={emp.id}
+                    key={emp._id}
                     className={`border-t transition-colors duration-300 ${darkMode ? "border-gray-600 hover:bg-gray-700" : "border-gray-200 hover:bg-gray-50"
                       }`}
                   >
@@ -338,7 +354,7 @@ export default function EmployeePage() {
                         <Edit size={16} />
                       </button>
                       <button
-                        onClick={() => handleDelete(emp.id)}
+                        onClick={() => handleDelete(emp._id)}
                         className="rounded bg-orange-600 px-3 py-2 text-white transition hover:bg-orange-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400"
                         aria-label={`Delete ${emp.name}`}
                       >
