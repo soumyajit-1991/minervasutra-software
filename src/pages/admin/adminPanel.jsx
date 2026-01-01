@@ -451,12 +451,12 @@ function Clients() {
 
     if (editingClient) {
       await axios.put(
-        `http://localhost:5000/api/clients/${editingClient}`,
+        `https://hr-management-backend-sable.vercel.app/api/clients/${editingClient}`,
         payload
       );
     } else {
       await axios.post(
-        "http://localhost:5000/api/clients",
+        "https://hr-management-backend-sable.vercel.app/api/clients",
         payload
       );
     }
@@ -484,7 +484,7 @@ function Clients() {
     console.log("Deleting ID:", id);
 
     await axios.delete(
-      `http://localhost:5000/api/clients/${id}`
+      `https://hr-management-backend-sable.vercel.app/api/clients/${id}`
     );
 
     alert("Client deleted");
