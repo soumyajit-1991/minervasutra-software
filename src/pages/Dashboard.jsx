@@ -43,6 +43,11 @@ export default function Dashboard() {
   }, []);
 
   const genderData = useMemo(() => {
+    // Safety check: ensure employees is an array
+    if (!Array.isArray(employees) || employees.length === 0) {
+      return [];
+    }
+
     const stats = employees.reduce((acc, curr) => {
       const gender = curr.personalInfo?.gender || "Unknown";
       acc[gender] = (acc[gender] || 0) + 1;

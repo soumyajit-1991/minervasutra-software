@@ -16,27 +16,23 @@ const Navbar = ({ darkMode, setDarkMode }) => {
   const [showNotificationsPopup, setShowNotificationsPopup] = useState(false);
   const [messageText, setMessageText] = useState("");
   const navigate = useNavigate();
-  const { currentEmployee, loading } = useEmployees();
+  const { employees, loading } = useEmployees();
 
-  // Use employee data from context or fallback to default
+  // Get current user from localStorage
+  const userJson = localStorage.getItem('user');
+  const loggedInUser = userJson ? JSON.parse(userJson) : null;
+  const currentUserEmail = loggedInUser?.email;
+  const currentEmployee = employees.find(emp => emp.email === currentUserEmail);
+
+  // Use employee data from context or fallback to logged-in user data
   const profileData = currentEmployee ? {
     imageUrl: currentEmployee.avatarUrl || navbar,
     name: currentEmployee.name,
-    mobile: currentEmployee.phone,
     email: currentEmployee.email,
-    employeeId: currentEmployee.employeeId || currentEmployee._id,
-    address: currentEmployee.personalInfo?.address || currentEmployee.location,
-    role: currentEmployee.role,
-    department: currentEmployee.department,
   } : {
     imageUrl: navbar,
-    name: "Loading...",
-    mobile: "-",
-    email: "-",
-    employeeId: "-",
-    address: "-",
-    role: "-",
-    department: "-",
+    name: loggedInUser?.name || loggedInUser?.email || "User",
+    email: loggedInUser?.email || "-",
   };
 
   const handleSendMessage = () => {
@@ -183,20 +179,11 @@ const Navbar = ({ darkMode, setDarkMode }) => {
                     />
                     <div className="text-center space-y-1">
                         <p className="font-semibold text-lg">{profileData.name}</p>
-                        <p className="text-sm text-gray-400">{profileData.mobile}</p>
                         <p className="text-sm text-gray-400">{profileData.email}</p>
-                        <p className="text-sm text-gray-400">
-                            Employee ID: {profileData.employeeId}
-                        </p>
-                        <p className="text-sm text-gray-400">
-                            Address: {profileData.address}
-                        </p>
-                        <p className="text-sm text-gray-400">Role: {profileData.role}</p>
-                        <p className="text-sm text-gray-400">Department: {profileData.department}</p>
                     </div>
                     <button
                         className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                        onClick={() => alert("Logging out...")}
+                        onClick={() => { alert("Logging out..."); navigate("/"); }}
                     >
                         Logout
                     </button>
