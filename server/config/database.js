@@ -3,14 +3,18 @@ const mongoose = require('mongoose');
 const database = {
   connect: async () => {
     try {
-      const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/hr_management';
+      const mongoUri = process.env.MONGO_URI || 'mongodb+srv://Minervasutra-hr:SM7zNjaNQg9zHxLC@cluster0.fi87xas.mongodb.net/';
       
-      await mongoose.connect("mongodb+srv://HACK:giDCgxy2d3HiO7IE@hackethic.ozjloba.mongodb.net/?retryWrites=true&w=majority&appName=HACKETHIC", {
+      await mongoose.connect(mongoUri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });
       
-      console.log('✅ MongoDB connected successfully');
+      if (process.env.MONGO_URI) {
+        console.log('✅ MongoDB connected successfully (using MONGO_URI)');
+      } else {
+        console.log('✅ MongoDB connected successfully (using local default)');
+      }
     } catch (error) {
       console.error('❌ MongoDB connection error:', error.message);
       throw error;

@@ -97,6 +97,9 @@ const connectDB = async () => {
   }
 };
 
+// Attempt an initial DB connection so you see the log at startup
+connectDB().catch(err => console.error('Initial DB connection failed:', err.message));
+
 // Connect on first request in serverless (non-blocking after first attempt)
 app.use(async (req, res, next) => {
   // Check if already connected
