@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://hr-management-backend-sable.vercel.app';
+const API_URL = import.meta.env.VITE_API_URL || 'https://hr-management-backend-w6w4.vercel.app';
 
 export const fetchOvertime = async () => {
   const response = await fetch(`${API_URL}/api/overtime`);

@@ -6,7 +6,7 @@ export default function AdminSupport() {
   const [loading, setLoading] = useState(true);
 
   const fetchFeedbacks = async () => {
-    const res = await axios.get("https://hr-management-backend-sable.vercel.app/api/feedback");
+    const res = await axios.get("https://hr-management-backend-w6w4.vercel.app/api/feedback");
     setFeedbacks(res.data);
     setLoading(false);
   };
@@ -17,7 +17,7 @@ export default function AdminSupport() {
 
   const updateStatus = async (id, status) => {
     await axios.put(
-      `https://hr-management-backend-sable.vercel.app/api/feedback/${id}/status`,
+      `https://hr-management-backend-w6w4.vercel.app/api/feedback/${id}/status`,
       { status }
     );
     fetchFeedbacks();

@@ -23,7 +23,7 @@ export default function PTOList() {
   const navigate = useNavigate();
   const fetchptolist = async () => {
     try {
-      const res = await axios.get("https://hr-management-backend-sable.vercel.app/api/employees");
+      const res = await axios.get("https://hr-management-backend-w6w4.vercel.app/api/employees");
       setList(res.data);
       setRequests(res.data);
       console.log(res.data);

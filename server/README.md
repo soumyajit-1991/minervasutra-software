@@ -385,7 +385,7 @@ The API can be tested using tools like:
 
 ### Health Check
 ```bash
-curl https://hr-management-backend-sable.vercel.app/api/health
+curl https://hr-management-backend-w6w4.vercel.app/api/health
 ```
 
 ## Contributing

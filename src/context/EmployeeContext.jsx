@@ -119,7 +119,7 @@ export function EmployeeProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const API = "https://hr-management-backend-sable.vercel.app/api/employees";
+  const API = "https://hr-management-backend-w6w4.vercel.app/api/employees";
 
   /* ===================== FETCH EMPLOYEES ===================== */
   const fetchEmployees = async () => {

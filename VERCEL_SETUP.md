@@ -95,4 +95,4 @@ cd server
 npm run dev
 ```
 
-The frontend will use `https://hr-management-backend-sable.vercel.app` automatically in development.
+The frontend will use `https://hr-management-backend-w6w4.vercel.app` automatically in development.

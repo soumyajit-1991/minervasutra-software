@@ -12,7 +12,7 @@ export async function safeJsonParse(response) {
     
     // If we got HTML (like an error page), provide helpful error
     if (text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<!doctype")) {
-      const apiUrl = import.meta.env.VITE_API_URL || "https://hr-management-backend-sable.vercel.app";
+      const apiUrl = import.meta.env.VITE_API_URL || "https://hr-management-backend-w6w4.vercel.app";
       throw new Error(
         `API returned HTML instead of JSON. This usually means:\n` +
         `1. The API URL (${apiUrl}) is incorrect or not accessible\n` +
@@ -56,7 +56,7 @@ export async function safeFetch(url, options = {}) {
   } catch (error) {
     // Network errors (CORS, connection refused, etc.)
     if (error instanceof TypeError && error.message.includes("fetch")) {
-      const apiUrl = import.meta.env.VITE_API_URL || "https://hr-management-backend-sable.vercel.app";
+      const apiUrl = import.meta.env.VITE_API_URL || "https://hr-management-backend-w6w4.vercel.app";
       throw new Error(
         `Failed to connect to API at ${apiUrl}.\n` +
         `This could be due to:\n` +

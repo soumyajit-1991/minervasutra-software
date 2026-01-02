@@ -30,7 +30,7 @@ if not exist server\node_modules (
 echo.
 echo Starting both frontend and backend servers...
 echo Frontend will be available at: http://localhost:5173
-echo Backend API will be available at: https://hr-management-backend-sable.vercel.app
+echo Backend API will be available at: https://hr-management-backend-w6w4.vercel.app
 echo.
 
 npm run start:dev

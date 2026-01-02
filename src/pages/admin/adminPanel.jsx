@@ -167,7 +167,7 @@
 //   });
 
 //   const fetchClients = async () => {
-//     const res = await axios.get("https://hr-management-backend-sable.vercel.app/api/clients");
+//     const res = await axios.get("https://hr-management-backend-w6w4.vercel.app/api/clients");
 //     setClients(res.data);
 //   };
 
@@ -181,7 +181,7 @@
 //   // const handleSubmit = async (e) => {
 //   //   e.preventDefault();
 
-//   //   await axios.post("https://hr-management-backend-sable.vercel.app/api/clients", {
+//   //   await axios.post("https://hr-management-backend-w6w4.vercel.app/api/clients", {
 //   //     ...formData,
 //   //     days: Number(formData.days)
 //   //   });
@@ -207,13 +207,13 @@
 //   if (editingClient) {
 //     // UPDATE
 //     await axios.put(
-//       `https://hr-management-backend-sable.vercel.app/api/clients/${editingClient}`,
+//       `https://hr-management-backend-w6w4.vercel.app/api/clients/${editingClient}`,
 //       payload
 //     );
 //   } else {
 //     // CREATE
 //     await axios.post(
-//       "https://hr-management-backend-sable.vercel.app/api/clients",
+//       "https://hr-management-backend-w6w4.vercel.app/api/clients",
 //       payload
 //     );
 //   }
@@ -427,7 +427,7 @@ function Clients() {
   /* ===== FETCH CLIENTS ===== */
   const fetchClients = async () => {
     const res = await axios.get(
-      "https://hr-management-backend-sable.vercel.app/api/clients"
+      "https://hr-management-backend-w6w4.vercel.app/api/clients"
     );
     setClients(res.data);
   };
@@ -451,12 +451,12 @@ function Clients() {
 
     if (editingClient) {
       await axios.put(
-        `https://hr-management-backend-sable.vercel.app/api/clients/${editingClient}`,
+        `https://hr-management-backend-w6w4.vercel.app/api/clients/${editingClient}`,
         payload
       );
     } else {
       await axios.post(
-        "https://hr-management-backend-sable.vercel.app/api/clients",
+        "https://hr-management-backend-w6w4.vercel.app/api/clients",
         payload
       );
     }
@@ -484,7 +484,7 @@ function Clients() {
     console.log("Deleting ID:", id);
 
     await axios.delete(
-      `https://hr-management-backend-sable.vercel.app/api/clients/${id}`
+      `https://hr-management-backend-w6w4.vercel.app/api/clients/${id}`
     );
 
     alert("Client deleted");

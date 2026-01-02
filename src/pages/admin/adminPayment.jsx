@@ -181,7 +181,7 @@ export default function AdminPayments() {
 
   // FETCH PAYMENTS
   const fetchPayments = async () => {
-    const res = await axios.get("https://hr-management-backend-sable.vercel.app/api/payments");
+    const res = await axios.get("https://hr-management-backend-w6w4.vercel.app/api/payments");
     setPayments(res.data);
   };
 
@@ -201,12 +201,12 @@ export default function AdminPayments() {
       if (editId) {
         // 🔁 UPDATE
         await axios.put(
-          `https://hr-management-backend-sable.vercel.app/api/payments/${editId}`,
+          `https://hr-management-backend-w6w4.vercel.app/api/payments/${editId}`,
           { ...formData, amount: Number(formData.amount) }
         );
       } else {
         // ➕ CREATE
-        await axios.post("https://hr-management-backend-sable.vercel.app/api/payments", {
+        await axios.post("https://hr-management-backend-w6w4.vercel.app/api/payments", {
           ...formData,
           amount: Number(formData.amount)
         });
