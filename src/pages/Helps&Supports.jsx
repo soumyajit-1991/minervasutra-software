@@ -103,7 +103,7 @@ export default function HelpSupport() {
     try {
       setLoading(true);
 
-      await axios.post("https://hr-management-backend-w6w4.vercel.app/api/feedback", {
+      await axios.post("https://hr-management-h9l2.vercel.app/api/feedback", {
         message,
         email: "hr@pharmecy.com",
         role: "hr"

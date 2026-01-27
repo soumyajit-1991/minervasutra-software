@@ -9,7 +9,7 @@
 // //     if (!email) return;
 
 // //     axios
-// //       .get(`https://hr-management-backend-w6w4.vercel.app/api/events/employee/${email}`)
+// //       .get(`https://hr-management-h9l2.vercel.app/api/events/employee/${email}`)
 // //       .then(res => setEvents(res.data))
 // //       .catch(err => console.error(err))
 // //       .finally(() => setLoading(false));
@@ -88,7 +88,7 @@
 //     const fetchEvents = async () => {
 //       try {
 //         const res = await axios.get(
-//           `https://hr-management-backend-w6w4.vercel.app/api/events/employee/${employeeEmail}`
+//           `https://hr-management-h9l2.vercel.app/api/events/employee/${employeeEmail}`
 //         );
 
 //         console.log("Fetched events 👉", res.data); // ✅ PRINT IN CONSOLE
@@ -190,7 +190,7 @@ export default function EventTracker() {
   //   const fetchEvents = async () => {
   //     try {
   //       const res = await axios.get(
-  //         `https://hr-management-backend-w6w4.vercel.app/api/events/employee/${employeeEmail}`
+  //         `https://hr-management-h9l2.vercel.app/api/events/employee/${employeeEmail}`
   //       );
   //       setEvents(res.data || []);
   //       console.log("Fetched events 👉", res.data);
@@ -212,7 +212,7 @@ export default function EventTracker() {
   const fetchEvents = async () => {
     try {
       const res = await axios.get(
-        `https://hr-management-backend-w6w4.vercel.app/api/events/employee/${employeeEmail}`
+        `https://hr-management-h9l2.vercel.app/api/events/employee/${employeeEmail}`
       );
       setEvents(res.data || []);
     } catch (err) {

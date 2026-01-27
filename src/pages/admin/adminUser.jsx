@@ -14,7 +14,7 @@ const Users = () => {
 
   /* ========== FETCH USERS ========== */
   const fetchUsers = async () => {
-    const res = await axios.get("http://localhost:5000/api/users");
+    const res = await axios.get("https://hr-management-h9l2.vercel.app/api/users");
     setUsers(res.data);
   };
 
@@ -25,7 +25,7 @@ const Users = () => {
   /* ========== SUBMIT ========== */
   const handleSubmit = async () => {
     try {
-      await axios.post("http://localhost:5000/api/users", form);
+      await axios.post("https://hr-management-h9l2.vercel.app/api/users", form);
       alert("User created");
 
       setForm({

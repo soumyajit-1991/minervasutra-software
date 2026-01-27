@@ -57,7 +57,7 @@ cd ..
 
 #### Frontend Environment (.env)
 ```env
-VITE_API_URL=https://hr-management-backend-w6w4.vercel.app
+VITE_API_URL=https://hr-management-h9l2.vercel.app
 ```
 
 #### Backend Environment (server/.env)
@@ -106,8 +106,8 @@ npm run dev
 ## Application URLs
 
 - **Frontend**: http://localhost:5173
-- **Backend API**: https://hr-management-backend-w6w4.vercel.app
-- **API Health Check**: https://hr-management-backend-w6w4.vercel.app/api/health
+- **Backend API**: https://hr-management-h9l2.vercel.app
+- **API Health Check**: https://hr-management-h9l2.vercel.app/api/health
 
 ## API Endpoints
 

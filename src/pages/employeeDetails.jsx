@@ -36,7 +36,7 @@ export default function EmployeeDetails() {
 
   const fetchEmployee = async () => {
     try {
-      const res = await axios.get(`https://hr-management-backend-w6w4.vercel.app/api/employees/${id}`);
+      const res = await axios.get(`https://hr-management-h9l2.vercel.app/api/employees/${id}`);
       setEmployee(res.data);
     } catch (err) {
       console.error(err);

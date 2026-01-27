@@ -16,7 +16,7 @@ const getApiBaseUrl = () => {
   }
   
   // Development fallback
-  return envUrl || "https://hr-management-backend-w6w4.vercel.app";
+  return envUrl || "https://hr-management-h9l2.vercel.app";
 };
 
 export const API_BASE_URL = getApiBaseUrl();

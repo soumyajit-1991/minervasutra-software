@@ -78,7 +78,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "https://hr-management-backend-w6w4.vercel.app/api/auth/login",
+        "https://hr-management-h9l2.vercel.app/api/auth/login",
         credentials
       );
 

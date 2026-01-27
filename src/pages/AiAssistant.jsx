@@ -292,7 +292,7 @@ const handleSend = async () => {
   setLoading(true);
 
   try {
-    const res = await fetch("http://localhost:5000/api/ai/chat", {
+    const res = await fetch("https://hr-management-r9e3.vercel.app/api/ai/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
