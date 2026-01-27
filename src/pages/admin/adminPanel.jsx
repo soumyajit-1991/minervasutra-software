@@ -369,6 +369,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import AdminPayments from "./adminPayment";
 import AdminSupport from "./adminSupport";
+import AdminUsers from "./adminUser";
 import logo from "../../assets/Screenshot 2025-12-29 220722.png";
 
 export default function AdminClientsPage() {
@@ -383,7 +384,7 @@ export default function AdminClientsPage() {
         </div>
 
         <nav className="flex flex-col p-4 gap-2">
-          {["Clients", "Payments", "Support"].map((tab) => (
+          {["Clients", "Payments", "Support", "Add User"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -404,6 +405,7 @@ export default function AdminClientsPage() {
         {activeTab === "Clients" && <Clients />}
         {activeTab === "Payments" && <AdminPayments />}
         {activeTab === "Support" && <AdminSupport />}
+        {activeTab === "Add User" && <AdminUsers />}
       </main>
     </div>
   );
