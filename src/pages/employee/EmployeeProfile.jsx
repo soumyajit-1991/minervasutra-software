@@ -134,7 +134,7 @@ export default function EmployeeProfile() {
     const fetchProfile = async () => {
       try {
         const res = await fetch(
-          `https://hr-management-h9l2.vercel.app/api/employee-profile/${user.email}`
+          `https://hr-management-r6bh.vercel.app/api/employee-profile/${user.email}`
         );
         const data = await res.json();
 

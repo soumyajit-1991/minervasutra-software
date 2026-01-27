@@ -141,7 +141,7 @@ export default function Payroll() {
   /* ===== FETCH PAYROLL ===== */
   const fetchPayroll = async () => {
     try {
-      const res = await axios.get("https://hr-management-h9l2.vercel.app/api/payroll");
+      const res = await axios.get("https://hr-management-r6bh.vercel.app/api/payroll");
       setRecords(res.data);
     } catch (err) {
       console.error("Failed to fetch payroll", err);
@@ -173,7 +173,7 @@ export default function Payroll() {
 
   const handleSubmit = async () => {
     try {
-      await axios.post("https://hr-management-h9l2.vercel.app/api/payroll", {
+      await axios.post("https://hr-management-r6bh.vercel.app/api/payroll", {
         ...formData,
         salary: Number(formData.salary),
       });

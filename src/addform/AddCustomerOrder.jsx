@@ -191,7 +191,7 @@ export default function AddNewCustomer() {
 
   try {
     const res = await axios.post(
-      "https://hr-management-h9l2.vercel.app/api/customer-orders",
+      "https://hr-management-r6bh.vercel.app/api/customer-orders",
       payload
     );
     

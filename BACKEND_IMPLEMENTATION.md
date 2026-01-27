@@ -198,13 +198,13 @@ npm start
 ### 5. Test API
 ```bash
 # Health check
-curl https://hr-management-h9l2.vercel.app/api/health
+curl https://hr-management-r6bh.vercel.app/api/health
 
 # Get all employees
-curl https://hr-management-h9l2.vercel.app/api/employees
+curl https://hr-management-r6bh.vercel.app/api/employees
 
 # Get dashboard stats
-curl https://hr-management-h9l2.vercel.app/api/dashboard/stats
+curl https://hr-management-r6bh.vercel.app/api/dashboard/stats
 ```
 
 ## Integration with Frontend

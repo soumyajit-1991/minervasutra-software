@@ -97,7 +97,7 @@ cd server
 npm install
 npm run dev
 ```
-Backend will run on: `https://hr-management-h9l2.vercel.app`
+Backend will run on: `https://hr-management-r6bh.vercel.app`
 
 ### 2. Start Frontend
 ```bash
@@ -159,7 +159,7 @@ Frontend will run on: `http://localhost:5173`
 
 ### API Base URL
 The frontend automatically detects the API URL:
-- **Development**: `https://hr-management-h9l2.vercel.app`
+- **Development**: `https://hr-management-r6bh.vercel.app`
 - **Production**: Uses environment variable or relative URLs
 
 ### Cache Configuration

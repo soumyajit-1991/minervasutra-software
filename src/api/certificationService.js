@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://hr-management-h9l2.vercel.app';
+const API_URL = import.meta.env.VITE_API_URL || 'https://hr-management-r6bh.vercel.app';
 
 export const fetchCertifications = async () => {
   const response = await fetch(`${API_URL}/api/certifications`);

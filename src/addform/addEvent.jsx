@@ -23,7 +23,7 @@ export default function AddEvent() {
     e.preventDefault();
 
     try {
-      await axios.post("https://hr-management-h9l2.vercel.app/api/events", formData);
+      await axios.post("https://hr-management-r6bh.vercel.app/api/events", formData);
       alert("Event created successfully");
       navigate("/employee-page");
     } catch (err) {

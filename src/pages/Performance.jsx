@@ -146,7 +146,7 @@ export default function Performance() {
 
   const fetchReviews = async () => {
     try {
-      const res = await axios.get("https://hr-management-h9l2.vercel.app/api/performance");
+      const res = await axios.get("https://hr-management-r6bh.vercel.app/api/performance");
       setReviews(res.data);
     } catch (err) {
       console.error("Failed to fetch reviews", err);
@@ -178,13 +178,13 @@ export default function Performance() {
   try {
     if (editId) {
       // ✅ UPDATE
-      await axios.put(`https://hr-management-h9l2.vercel.app/api/performance/${editId}`, {
+      await axios.put(`https://hr-management-r6bh.vercel.app/api/performance/${editId}`, {
         ...formData,
         rating: Number(formData.rating),
       });
     } else {
       // ✅ CREATE
-      await axios.post("https://hr-management-h9l2.vercel.app/api/performance", {
+      await axios.post("https://hr-management-r6bh.vercel.app/api/performance", {
         ...formData,
         rating: Number(formData.rating),
       });
@@ -210,7 +210,7 @@ export default function Performance() {
 
   const markCompleted = async (id) => {
   try {
-    await axios.patch(`https://hr-management-h9l2.vercel.app/api/performance/${id}`, {
+    await axios.patch(`https://hr-management-r6bh.vercel.app/api/performance/${id}`, {
       status: "Completed",
     });
     fetchReviews();
@@ -224,7 +224,7 @@ const deleteReview = async (id) => {
 
   try {
       
-    await axios.delete(`https://hr-management-h9l2.vercel.app/api/performance/${id}`);
+    await axios.delete(`https://hr-management-r6bh.vercel.app/api/performance/${id}`);
     fetchReviews();
   } catch (err) {
     console.error("Failed to delete review", err);

@@ -14,7 +14,7 @@ export default function TaskManagement() {
     const fetchTasks = async () => {
       try {
         const res = await axios.get(
-          `https://hr-management-h9l2.vercel.app/api/tasks/employee/${employeeEmail}`
+          `https://hr-management-r6bh.vercel.app/api/tasks/employee/${employeeEmail}`
         );
         setTasks(res.data || []);
       } catch (err) {

@@ -2,7 +2,7 @@
 // import { useOutletContext, useNavigate } from "react-router-dom";
 // import axios from "axios";
 
-// const API = "https://hr-management-h9l2.vercel.app/api/expenses"
+// const API = "https://hr-management-r6bh.vercel.app/api/expenses"
 
 
    
@@ -473,8 +473,8 @@ import {
   Trash2,
 } from "lucide-react";
 
-const API = "https://hr-management-h9l2.vercel.app/api/expenses";
-// const API="https://hr-management-h9l2.vercel.app/api/expenses"
+const API = "https://hr-management-r6bh.vercel.app/api/expenses";
+// const API="https://hr-management-r6bh.vercel.app/api/expenses"
 
 export default function Expenses() {
   const { darkMode } = useOutletContext();

@@ -179,7 +179,7 @@ export default function Status() {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const res = await axios.get("https://hr-management-h9l2.vercel.app/api/employees");
+        const res = await axios.get("https://hr-management-r6bh.vercel.app/api/employees");
 
         const normalized = res.data.map((emp) => ({
           id: emp._id,

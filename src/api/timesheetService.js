@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://hr-management-h9l2.vercel.app';
+const API_URL = import.meta.env.VITE_API_URL || 'https://hr-management-r6bh.vercel.app';
 
 // export const fetchTimesheets = async () => {
 //   try {
@@ -13,7 +13,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'https://hr-management-h9l2.verc
 // };
 
 export const fetchTimesheets = async () => {
-  const res = await fetch("https://hr-management-h9l2.vercel.app/api/timesheets");
+  const res = await fetch("https://hr-management-r6bh.vercel.app/api/timesheets");
   return res.json();
 };
 

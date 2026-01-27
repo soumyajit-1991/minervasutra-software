@@ -41,9 +41,9 @@
 
 import axios from "axios";
 
-const API_URL = "https://hr-management-h9l2.vercel.app/api/negotiations";
+const API_URL = "https://hr-management-r6bh.vercel.app/api/negotiations";
 
-// const API_URL = "https://hr-management-h9l2.vercel.app/api/negotiations";
+// const API_URL = "https://hr-management-r6bh.vercel.app/api/negotiations";
 
 
 export const fetchNegotiations = async () => {
