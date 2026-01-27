@@ -3,7 +3,7 @@ const router = express.Router();
 const {
   saveProfile,
   getProfileByEmail,
-} = require("../controllers/employeeProfileController");
+} = require("../controllers/EmployeeProfileController");
 
 router.post("/save", saveProfile);
 router.get("/:email", getProfileByEmail);
