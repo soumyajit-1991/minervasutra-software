@@ -27,6 +27,10 @@ const supplierOrderRoutes = require('./routes/supplierOrderRoutes');
 const ptoRoutes = require('./routes/pto');
 const authRoutes = require("./routes/authRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
+const userRoutes = require("./routes/userRoutes");
+
+
+
 
 
 
@@ -177,6 +181,8 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/clients", require("./routes/clientRoutes"));
 app.use("/api/feedback", require("./routes/feedbackRoutes"));
 app.use("/api/feedback", require("./routes/feedbackRoutesforclient"));
+app.use("/api/ai", require("./routes/ai"));
+app.use("/api/users", userRoutes);
 
 
 
